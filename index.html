@@ -1,0 +1,336 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>S Akash</title>
+    
+    <meta name="author" content="Akash Sudarsana Narasimhan">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+    <style>
+        body, td, th, tr, p, a { font-family: 'Lato', Verdana, Helvetica, sans-serif; font-size: 14px }
+        strong { font-family: 'Lato', Verdana, Helvetica, sans-serif; font-size: 14px; }
+        heading { font-family: 'Lato', Verdana, Helvetica, sans-serif; font-size: 22px; }
+        papertitle { font-family: 'Lato', Verdana, Helvetica, sans-serif; font-size: 14px; font-weight: 700 }
+        name { font-family: 'Lato', Verdana, Helvetica, sans-serif; font-size: 32px; }
+        .one { width: 160px; height: 160px; position: relative; }
+        .two { width: 160px; height: 160px; position: absolute; transition: opacity .2s ease-in-out; }
+        .fade { transition: opacity .2s ease-in-out; }
+        a { color: #1772d0; text-decoration: none; }
+        a:focus, a:hover { color: #f09228; text-decoration: none; }
+        .img-circle { border-radius: 50%; }
+        /* Font imports simplified for this example */
+        @import url('https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic');
+    </style>
+
+    <link rel="icon" type="image/png" href="images/favicon.png"> 
+</head>
+
+<body>
+    <table border=0 style="width:100%;max-width:800px;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;"><tbody>
+        <tr style="padding:0px">
+            <td style="padding:0px">
+                
+                <table border=0 style="width:100%;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;"><tbody>
+                    <tr style="padding:0px">
+                        <td style="padding:2.5%;width:20%;max-width:20%">
+                            <a href="#"><img style="width:100%;max-width:100%" alt="profile photo" src="images/akash_photo_casual.png" class="img-circle"></a>
+                        </td>
+                        <td style="padding:2.5%;width:60%;vertical-align:middle">
+                            <p style="text-align:center">
+                                <h1 style="text-align:center"><name>Akash Sudarsana Narasimhan</name></h1>
+                            </p>
+                            <p style="text-align:center">
+                            &nbsp|&nbsp
+                            <a href="#news" onclick=Expand("news")>News</a>
+                            &nbsp|&nbsp
+                            <a href="#experience" onclick=Expand("experience")>Experience</a>
+                            &nbsp|&nbsp
+                            <a href="#projects" onclick=Expand("projects")>Projects</a>
+                            &nbsp|&nbsp
+                            <a href="mailto:akash20041764591@gmail.com">Contact</a>
+                            &nbsp|&nbsp
+                            </p>
+                        </td>
+                        <td style="padding:2.5%;width:10%;max-width:10%"></td>
+                    </tr>
+                </tbody></table>
+
+
+                <table style="width:100%;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;"><tbody>
+                    <tr style="padding:0px">
+                        <td style="padding:2.5%;width:63%;vertical-align:middle">
+                            <p> Hello! I'm Akash Sudarsana Narasimhan (aka S Akash), a final year undergrad at the
+                                <a href="https://www.iitp.ac.in/" target="_blank">Indian Institute of Technology (IIT), Patna</a>, pursuing a Bachelor of Technology in Electrical Engineering. 
+                                My research interests revolve around sequential decision-making problems, especially <em>multi-armed bandits</em> and <em>reinforcement learning</em>.
+                            </p>
+                            <p>
+                                I spent two wonderful summers interning at <a href="https://www.iiit.ac.in/" target="_blank">IIIT Hyderabad</a> and <a href="https://www.irit.fr/en/home/" target="_blank">IRIT, Toulouse</a>. 
+                                During these stints, I was fortunate to be mentored by <a href="https://sites.google.com/view/tejaspbodas/" target="_blank">Dr. Tejas Bodas</a>
+                                and <a href="https://www.irit.fr/~Urtzi.Ayesta/" target="_blank">Dr. Urtzi Ayesta</a> respectively. 
+                                My research in Toulouse was generously supported by the <a href="https://www.inde.campusfrance.org/charpak-lab-scholarship" target="_blank">Charpak Excellence scholarship</a>. 
+                                We explored sample efficiency of Q-learning variants, learning algorithms for Markovian bandits and the time-varying holding cost problem in M/M/1 queues during these internships.
+            
+                            </p>
+                            <p>
+                                Feel free to drop me an 
+                                 <a href="mailto:akash20041764591@gmail.com" target="_blank">e-mail</a>
+                                  if you want to chat with me! 
+                            </p>
+
+                            <p style="text-align:center">
+                                &nbsp&nbsp
+                                <a href="mailto:akash20041764591@gmail.com" target="_blank">Email</a> &nbsp|&nbsp
+                                <a href="https://drive.google.com/file/d/1GEekgd30CqXxx0UVr5t-rwKo6Uvem6VS/view?usp=sharing" target="_blank" >Resume</a> &nbsp|&nbsp
+                                <a href="https://www.linkedin.com/in/akash-s-473781263/" target="_blank">LinkedIn</a> &nbsp|&nbsp
+                                <a href="https://github.com/akash1764591" target="_blank" >Github</a>
+                                &nbsp&nbsp
+                            </p>
+                        </td>
+                    </tr>
+                </tbody></table>
+                <hr class="soft">
+
+                        <button style="border:0px transparent; background-color: transparent;outline:none;" type="button" class="collapsible" data-toggle="collapse" data-target="#content-news" id="news"><heading>News</heading></button>
+        <div id="content-news" class="collapse in">
+            <table border=0 style="padding:10px;width:100%;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;"><tbody>
+
+                <tr>
+                    <td style="padding-bottom: 10px; width:15%; vertical-align:top">
+                        <p style="color:darkblue; display:inline">Oct 2025 &nbsp</p>
+                    </td>
+                    <td style="padding-bottom: 10px; vertical-align:top">
+                        Our Team <em>Apex</em> secured 24th position (out of 80,000+) in the Amazon ML Challenge '25.
+                    </td>
+                </tr>
+
+                <tr>
+                    <td style="padding-bottom: 10px; width:15%; vertical-align:top">
+                        <p style="color:darkblue; display:inline">June 2025 &nbsp</p>
+                    </td>
+                    <td style="padding-bottom: 10px; vertical-align:top">
+                        Attended the Microsoft Research Academic Summit (gained a fresh Outlook!).
+                    </td>
+                </tr>
+
+                <tr>
+                    <td style="padding-bottom: 10px; width:15%; vertical-align:top">
+                        <p style="color:darkblue; display:inline">May 2025 &nbsp</p>
+                    </td>
+                    <td style="padding-bottom: 10px; vertical-align:top">
+                        Started my summer internship at IRIT Toulouse. 
+                    </td>
+                </tr>
+
+                <tr>
+                    <td style="padding-bottom: 10px; width:15%; vertical-align:top">
+                        <p style="color:darkblue; display:inline">Mar 2025 &nbsp</p>
+                    </td>
+                    <td style="padding-bottom: 10px; vertical-align:top">
+                        Selected for the France Excellence Charpak Scholarship (among 35 Indian undergraduates).
+                    </td>
+                </tr>
+
+
+                <tr>
+                    <td style="padding-bottom: 10px; width:15%; vertical-align:top">
+                        <p style="color:darkblue; display:inline">Dec 2024 &nbsp</p>
+                    </td>
+                    <td style="padding-bottom: 10px; vertical-align:top">
+                        Spent a week at IIT Bombay leading the team on the BharatForge challenge for Inter IIT Tech Meet 13.0.
+                    </td>
+                </tr>
+
+                <tr>
+                    <td style="padding-bottom: 10px; width:15%; vertical-align:top">
+                        <p style="color:darkblue; display:inline">Dec 2024 &nbsp</p>
+                    </td>
+                    <td style="padding-bottom: 10px; vertical-align:top">
+                        Selected for the CS Theory Winter Residency at IIT Delhi (cohort of 30 students nationwide).
+                    </td>
+                </tr>
+
+                 <tr>
+                    <td style="padding-bottom: 10px; width:15%; vertical-align:top">
+                        <p style="color:darkblue; display:inline">May 2024 &nbsp</p>
+                    </td>
+                    <td style="padding-bottom: 10px; vertical-align:top">
+                        Started my summer internship at IIIT Hyderabad.
+                    </td>
+                </tr>
+
+                <tr>
+                    <td style="padding-bottom: 10px; width:15%; vertical-align:top">
+                        <p style="color:darkblue; display:inline">Dec 2023 &nbsp</p>
+                    </td>
+                    <td style="padding-bottom: 10px; vertical-align:top">
+                        Represented Team IIT Patna in the Devrev problem statement at Inter IIT Tech Meet 12.0 hosted by IIT Madras.
+                    </td>
+                </tr>
+
+                <tr>
+                    <td style="padding-bottom: 10px; width:15%; vertical-align:top">
+                        <p style="color:darkblue; display:inline">Aug 2023 &nbsp</p>
+                    </td>
+                    <td style="padding-bottom: 10px; vertical-align:top">
+                        Stepped up as Sophomore Coordinator for the campus Machine Learning society. 
+                    </td>
+                </tr>
+
+                <tr>
+                    <td style="padding-bottom: 10px; width:15%; vertical-align:top">
+                        <p style="color:darkblue; display:inline">Nov 2022 &nbsp</p>
+                    </td>
+                    <td style="padding-bottom: 10px; vertical-align:top">
+                        Joined IIT Patna for my undergrad studies.
+                    </td>
+                </tr>
+
+    
+
+                </tbody></table>
+                </div>
+                <hr class="soft">
+                
+
+                <button style="border:0px transparent; background-color: transparent;outline:none;" type="button" class="collapsible" data-toggle="collapse" data-target="#content-experience" id="experience"><heading>Experience</heading></button>
+                <div id="content-experience" class="collapse in">
+
+                <table border=0 style="padding:20px;width:100%;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;"><tbody>
+
+                    <tr>
+                        <td style="padding:10px;width:25%;vertical-align:middle">
+                            <div class="one">
+                                <img src='images/irit_logo.webp' width="120" alt="IRIT Logo">
+                            </div>
+                        </td>
+                        <td style="padding:10px;width:75%;vertical-align:top">
+                            <papertitle style="color:gray"><big>Summer Intern</big> </papertitle> <papertitle ><big> | IRIT Toulouse</big></papertitle>
+                            <br>
+                            May '25 - July '25
+                            <br>
+                            <br>
+                            <p>Advisor: Dr. Urtzi Ayesta</p>
+                            <p>Interned with the RMESS team, focusing on the development and analysis of Whittle index-based scheduling algorithms. </p>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td style="padding:10px;width:25%;vertical-align:middle">
+                            <div class="one">
+                                <img src='images/IIIT_Hyderabad_Logo-e1655116937986.jpg' width="120" alt="IIIT Hyderabad Logo">
+                            </div>
+                        </td>
+                        <td style="padding:10px;width:75%;vertical-align:top">
+                            <papertitle style="color:gray"><big>Summer Intern</big> </papertitle> <papertitle ><big> | IIIT Hyderabad</big></papertitle>
+                            <br>
+                            May '24 - July '24
+                            <br>
+                            <br>
+                            <p>Advisor: Dr. Tejas Bodas</p>
+                            <p>Interned with the Computer Systems Group, developing RL algorithms for Markovian bandits and a hybrid algorithm to improve the sample efficiency of Q-learning. </p>
+                        </td>
+                    </tr>
+
+
+                </tbody></table>
+                </div>
+                <hr class="soft">
+
+                <button style="border:0px transparent; background-color: transparent;outline:none;" type="button" class="collapsible" data-toggle="collapse" data-target="#content-projects" id="projects"><heading>Selected Projects</heading></button>
+<div id="content-projects" class="collapse in">
+
+            <table style="width:100%;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;"><tbody>
+
+                <tr>
+                    <td style="padding:20px;width:25%;vertical-align:middle">
+                        <div style="text-align:center">
+                            <img src='images/adaptive_shifts.png' width="160" style="border-radius:5px; max-width:100%">
+                        </div>
+                    </td>
+                    <td style="padding:20px;width:75%;vertical-align:middle">
+                        <papertitle><big>Adaptive Shift Rules (Bachelor Thesis Project)</big></papertitle>
+                        <br>
+                        Oct '25 - Present
+                        <!-- <em style="color:gray; font-size:12px">Oct '25 - Present</em> -->
+                        <br>
+                        <p style="margin-top:5px">Developing a gradient estimation framework to overcome the limitations of fixed-shift rules on noisy quantum hardware. 
+                            Modeling the shot-noise landscape via Fourier series to test an adaptive strategy for selecting shift angles.</p>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td style="padding:20px;width:25%;vertical-align:middle">
+                        <div style="text-align:center">
+                            <img src='images/resource-gathering.gif' width="160" style="border-radius:5px; max-width:100%">
+                        </div>
+                    </td>
+                    <td style="padding:20px;width:75%;vertical-align:middle">
+                        <papertitle><big>Fair Multi-objective RL </big><em><a href="https://github.com/akash1764591/Fair-MORL" target="_blank">[code]</a></em></papertitle>
+                        <br>
+                        <p style="margin-top:5px">Implemented the Fair Multi-Objective DQN <a href="https://rlj.cs.umass.edu/2025/papers/RLJ_RLC_2025_350.pdf" target="_blank">(FMDQ)</a> algorithm substituting standard linear scalarization with a Generalized Gini Welfare function. Designed the agent to be fully compatible with the <code>morl-baselines</code> library for benchmarking.</p>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td style="padding:20px;width:25%;vertical-align:middle">
+                        <div style="text-align:center">
+                            <img src='images/basic_policy_graph.png' width="160" style="border-radius:5px; max-width:100%">
+                        </div>
+                    </td>
+                    <td style="padding:20px;width:75%;vertical-align:middle">
+                        <papertitle><big>PolicyChain: Analyzes MDP policies as Markov Chain </big>
+                            <em><a href="https://github.com/akash1764591/PolicyChain" target="_blank">[code]</a></em></papertitle>
+                        <br>
+                        <p style="margin-top:5px">Developed a Python tool that flattens an MDP and policy into its induced Markov chain. Analyzes structural properties (communicating classes, ergodicity) and generates visualizations like policy graphs and heatmaps.</p>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td style="padding:20px;width:25%;vertical-align:middle">
+                        <div style="text-align:center">
+                            <img src='images/ml_challenge.webp' width="160" style="border-radius:5px; max-width:100%">
+                        </div>
+                    </td>
+                    <td style="padding:20px;width:75%;vertical-align:middle">
+                        <papertitle><big>Smart Product Pricing (Amazon ML Challenge) </big><em><a href="https://github.com/akash1764591/ML-Challenge" target="_blank">[code]</a></em></papertitle>
+                        <br>
+                        <p style="margin-top:5px">Formulated product price prediction as a text regression problem. Fine-tuned a <code>deberta-v3-large</code> model with a custom regression head to predict prices from catalog text, engineered a hybrid pipeline with Regex and LLM imputation.</p>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td style="padding:20px;width:25%;vertical-align:middle">
+                        <div style="text-align:center">
+                            <img src='images/QuantumCircuit.png' width="160" style="border-radius:5px; max-width:100%">
+                        </div>
+                    </td>
+                    <td style="padding:20px;width:75%;vertical-align:middle">
+                        <papertitle><big>Thompson Sampling for Quantum Entanglement</big></papertitle>
+                        <br>
+                        <p style="margin-top:5px">Formulated quantum entanglement detection as a multi-armed bandit problem. Implemented Top-Two Thompson Sampling to select measurements efficiently, identifying entangled states with far fewer samples than traditional tomography.</p>
+                    </td>
+                </tr>
+
+            </tbody></table>
+        </div>
+        <hr class="soft">
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <p>Website adapted from Jon Barron's <a href="https://jonbarron.info/" target="_blank">template</a>. 
+                    It has further been modified by <a href="https://github.com/harshit2807161/harshit2807161.github.io" target="_blank">Harshit Dhankar</a> and <a href="https://github.com/fliptrail/fliptrail.github.io" target="_blank">Amish Mittal</a>. 
+                    Feel free to clone the repo; please credit the original <a href="https://jonbarron.info/" target="_blank">author</a>.
+                </p>
+            </td>
+        </tr>
+    </table>
+
+</body>
+</html>
