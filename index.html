@@ -197,24 +197,57 @@
             border-radius: 0 8px 8px 0;
             margin-bottom: 14px;
         }
-        .pub-title { font-weight: 700; font-size: 15px; margin-bottom: 4px; line-height: 1.4; }
-        .pub-authors { font-size: 13px; color: #555; margin-bottom: 4px; }
-        .pub-venue { font-size: 13px; color: #888; margin-bottom: 10px; }
-        .pub-links { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
-        .pub-links a {
-            font-size: 13px;
+        .pub-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 14px;
+            margin-bottom: 6px;
+        }
+        .pub-title {
+            flex: 1;
+            font-weight: 700;
+            font-size: 15px;
+            line-height: 1.4;
+        }
+        .pub-actions {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+            flex-shrink: 0;
+            max-width: 55%;
+        }
+        .pub-action-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 3px 9px;
+            border: 1px solid #b8ccec;
+            border-radius: 4px;
+            font-size: 12px;
             font-weight: 600;
             color: #418adf;
+            background: #fff;
+            text-decoration: none;
+            white-space: nowrap;
+            letter-spacing: 0.2px;
+            transition: background 0.15s, color 0.15s, border-color 0.15s;
         }
-        .pub-links a:hover { color: #f09228; }
+        .pub-action-btn:hover { background: #418adf; color: #fff; border-color: #418adf; }
+        .pub-action-btn svg { width: 11px; height: 11px; flex-shrink: 0; }
+
+        .pub-authors { font-size: 13px; color: #555; margin-bottom: 4px; }
+        .pub-venue { font-size: 13px; color: #888; }
+
         .abstract-toggle {
-            background: none;
+            background: #fff;
             border: 1px solid #b8ccec;
             border-radius: 4px;
             color: #418adf;
             font-size: 12px;
             font-weight: 600;
-            padding: 3px 10px;
+            padding: 3px 9px;
             cursor: pointer;
             display: inline-flex;
             align-items: center;
@@ -261,6 +294,8 @@
             .proj-thumb { width: 100%; }
             .proj-thumb img { width: 100%; }
             .site-nav .brand { display: none; }
+            .pub-header { flex-direction: column; }
+            .pub-actions { max-width: 100%; justify-content: flex-start; margin-top: 6px; }
         }
     </style>
 </head>
@@ -376,18 +411,31 @@
             <div class="section-title">Publications</div>
 
             <div class="pub-entry">
-                <div class="pub-title">Best-of-Both-Worlds Multi-Dueling Bandits: Unified Algorithms for Stochastic and Adversarial Preferences under Condorcet and Borda Objectives</div>
-                <div class="pub-authors"><strong>S Akash</strong>, Pratik Gajane, Jawar Singh</div>
-                <div class="pub-venue"><a href="https://rl-conference.cc/" target="_blank">RLC 2026</a></div>
-                <div class="pub-links">
-                    <a href="https://arxiv.org/abs/2603.18972" target="_blank">arXiv</a>
-                    <button class="abstract-toggle" onclick="
-                        this.classList.toggle('open');
-                        this.parentElement.nextElementSibling.classList.toggle('open');
-                    ">
-                        <span class="chevron">&#9658;</span> Abstract
-                    </button>
+                <div class="pub-header">
+                    <div class="pub-title">Best-of-Both-Worlds Multi-Dueling Bandits: Unified Algorithms for Stochastic and Adversarial Preferences under Condorcet and Borda Objectives</div>
+                    <div class="pub-actions">
+                        <a href="DATA/Multi_Dueling_Bandits.pdf" target="_blank" class="pub-action-btn" title="Full paper PDF">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                            Full Paper
+                        </a>
+                        <a href="DATA/Multi_Dueling_Bandits_extended_abstract.pdf" target="_blank" class="pub-action-btn" title="Extended abstract PDF">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                            Ext. Abstract
+                        </a>
+                        <a href="https://arxiv.org/abs/2603.18972" target="_blank" class="pub-action-btn" title="arXiv">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                            arXiv
+                        </a>
+                        <button class="abstract-toggle" onclick="
+                            this.classList.toggle('open');
+                            this.closest('.pub-entry').querySelector('.abstract-body').classList.toggle('open');
+                        ">
+                            <span class="chevron">&#9658;</span> Summary
+                        </button>
+                    </div>
                 </div>
+                <div class="pub-authors"><strong>S Akash</strong>, Pratik Gajane, Jawar Singh</div>
+                <div class="pub-venue">Full paper accepted at <a href="https://rl-conference.cc/" target="_blank">RLC 2026</a> &nbsp;&middot;&nbsp; Extended abstract accepted at <a href="https://probml.cc/" target="_blank">ProbML @ ICML 2026</a> (Workshop Track)</div>
                 <div class="abstract-body">
                     <div class="abstract-text">
                         Multi-dueling bandits — where a learner selects multiple arms per round and observes only the winner — arise naturally in ranking and recommendation systems. We ask: can a single algorithm perform optimally in both stochastic and adversarial environments, without knowing which regime it faces? We answer affirmatively, giving the first best-of-both-worlds algorithms for multi-dueling bandits under both Condorcet and Borda objectives, with matching lower bounds for the Condorcet setting and near optimal bounds for the Borda setting.
