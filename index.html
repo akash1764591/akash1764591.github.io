@@ -26,9 +26,10 @@
     <link rel="icon" type="image/png" href="images/favicon.png">
 
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,400;0,700;1,400&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,400;0,700;1,400&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&display=swap');
 
         *, body { font-family: 'Lato', Verdana, Helvetica, sans-serif; font-size: 15px; color: #333; }
+        .serif { font-family: 'Source Serif 4', 'Source Serif Pro', Georgia, 'Times New Roman', serif; }
 
         html { scroll-behavior: smooth; }
 
@@ -53,22 +54,23 @@
             gap: 4px;
         }
         .site-nav .brand {
+            font-family: 'Source Serif 4', 'Source Serif Pro', Georgia, serif;
             font-weight: 700;
-            font-size: 16px;
+            font-size: 18px;
             color: #222;
             margin-right: auto;
             text-decoration: none;
+            letter-spacing: -0.2px;
         }
         .site-nav .brand:hover { color: #418adf; }
         .site-nav a.nav-link {
             color: #555;
             font-size: 14px;
             font-weight: 600;
-            padding: 5px 12px;
-            border-radius: 5px;
-            transition: background 0.15s, color 0.15s;
+            padding: 5px 10px;
+            transition: color 0.15s;
         }
-        .site-nav a.nav-link:hover { color: #418adf; background: #f0f5ff; }
+        .site-nav a.nav-link:hover { color: #418adf; }
 
         /* ── Page wrapper ── */
         .page { max-width: 850px; margin: 0 auto; padding: 0 24px 40px; }
@@ -87,42 +89,41 @@
             object-fit: cover;
             object-position: top center;
             flex-shrink: 0;
-            box-shadow: 0 0 0 3px #fff, 0 0 0 5px #418adf, 0 6px 20px rgba(0,0,0,0.13);
+            border: 1px solid #e5e5e5;
         }
         .profile-text h1 {
-            font-size: 28px;
+            font-family: 'Source Serif 4', 'Source Serif Pro', Georgia, serif;
+            font-size: 32px;
             font-weight: 700;
             color: #111;
             margin: 0 0 12px;
+            letter-spacing: -0.5px;
         }
         .profile-text p { margin-bottom: 10px; line-height: 1.6; }
         .profile-links {
             margin-top: 14px;
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
+            font-size: 14px;
+            color: #aaa;
+            letter-spacing: 0.3px;
         }
         .profile-links a {
-            display: inline-block;
-            padding: 5px 14px;
-            border: 1px solid #418adf;
-            border-radius: 20px;
-            font-size: 13px;
-            font-weight: 600;
             color: #418adf;
-            transition: background 0.15s, color 0.15s;
+            font-weight: 600;
         }
-        .profile-links a:hover { background: #418adf; color: #fff; }
+        .profile-links a:hover { color: #f09228; }
+        .profile-links .sep { color: #ccc; margin: 0 4px; }
 
         /* ── Section ── */
         .section { margin-top: 32px; }
         .section-title {
-            font-size: 20px;
+            font-family: 'Source Serif 4', 'Source Serif Pro', Georgia, serif;
+            font-size: 24px;
             font-weight: 700;
             color: #111;
-            padding-bottom: 8px;
-            border-bottom: 2px solid #418adf;
-            margin-bottom: 20px;
+            padding-bottom: 6px;
+            border-bottom: 1px solid #ddd;
+            margin-bottom: 18px;
+            letter-spacing: -0.3px;
         }
 
         /* ── News ── */
@@ -142,7 +143,7 @@
         }
         .news-row:last-child { border-bottom: none; }
         .news-date {
-            color: #1a3a7a;
+            color: #666;
             font-weight: 600;
             font-size: 13px;
             min-width: 72px;
@@ -152,15 +153,12 @@
         /* ── Cards (experience & projects) ── */
         .card-entry {
             display: flex;
-            gap: 20px;
+            gap: 22px;
             align-items: flex-start;
-            padding: 16px;
-            border: 1px solid #eee;
-            border-radius: 10px;
-            margin-bottom: 14px;
-            transition: box-shadow 0.18s;
+            padding: 14px 0;
+            border-bottom: 1px dashed #ececec;
         }
-        .card-entry:hover { box-shadow: 0 3px 14px rgba(0,0,0,0.08); }
+        .card-entry:last-child { border-bottom: none; }
         .card-logo {
             flex-shrink: 0;
             width: 90px;
@@ -172,12 +170,12 @@
         .card-body { flex: 1; }
         .card-title {
             font-weight: 700;
-            font-size: 15px;
-            color: steelblue;
+            font-size: 15.5px;
+            color: #222;
             margin-bottom: 2px;
         }
-        .card-subtitle { font-size: 13px; color: #777; margin-bottom: 6px; }
-        .card-body p { margin: 4px 0; line-height: 1.5; }
+        .card-subtitle { font-size: 13px; color: #888; margin-bottom: 6px; }
+        .card-body p { margin: 4px 0; line-height: 1.55; color: #444; }
 
         /* project thumbnail */
         .proj-thumb {
@@ -187,98 +185,54 @@
             align-items: center;
             justify-content: center;
         }
-        .proj-thumb img { width: 110px; border-radius: 6px; object-fit: cover; }
+        .proj-thumb img { width: 110px; border-radius: 4px; object-fit: cover; }
 
-        /* ── Publication ── */
-        .pub-entry {
-            padding: 16px;
-            border-left: 4px solid #418adf;
-            background: #f8faff;
-            border-radius: 0 8px 8px 0;
-            margin-bottom: 14px;
+        /* ── Publication (Barron-style) ── */
+        .pub-item {
+            padding: 14px 0 16px;
+            border-bottom: 1px dashed #e4e4e4;
         }
-        .pub-header {
-            display: flex;
-            align-items: flex-start;
-            justify-content: space-between;
-            gap: 14px;
-            margin-bottom: 6px;
-        }
+        .pub-item:last-child { border-bottom: none; }
         .pub-title {
-            flex: 1;
+            font-family: 'Source Serif 4', 'Source Serif Pro', Georgia, serif;
+            font-size: 17px;
             font-weight: 700;
-            font-size: 15px;
-            line-height: 1.4;
+            color: #222;
+            line-height: 1.35;
+            margin-bottom: 4px;
+            letter-spacing: -0.1px;
         }
-        .pub-actions {
-            display: flex;
-            gap: 6px;
-            flex-wrap: wrap;
-            justify-content: flex-end;
-            flex-shrink: 0;
-            max-width: 55%;
+        .pub-title a { color: #222; }
+        .pub-title a:hover { color: #418adf; }
+        .pub-authors { font-size: 14px; color: #333; margin-bottom: 1px; line-height: 1.5; }
+        .pub-venue { font-size: 13.5px; color: #555; line-height: 1.5; }
+        .pub-venue em { color: #418adf; font-style: italic; }
+        .pub-links {
+            margin-top: 8px;
+            font-size: 13.5px;
+            color: #aaa;
+            letter-spacing: 0.5px;
         }
-        .pub-action-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-            padding: 3px 9px;
-            border: 1px solid #b8ccec;
-            border-radius: 4px;
-            font-size: 12px;
-            font-weight: 600;
+        .pub-links a {
             color: #418adf;
-            background: #fff;
-            text-decoration: none;
-            white-space: nowrap;
-            letter-spacing: 0.2px;
-            transition: background 0.15s, color 0.15s, border-color 0.15s;
-        }
-        .pub-action-btn:hover { background: #418adf; color: #fff; border-color: #418adf; }
-        .pub-action-btn svg { width: 11px; height: 11px; flex-shrink: 0; }
-
-        .pub-authors { font-size: 13px; color: #555; margin-bottom: 4px; }
-        .pub-venue { font-size: 13px; color: #888; }
-
-        .abstract-toggle {
-            background: #fff;
-            border: 1px solid #b8ccec;
-            border-radius: 4px;
-            color: #418adf;
-            font-size: 12px;
             font-weight: 600;
-            padding: 3px 9px;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-            transition: background 0.15s, color 0.15s, border-color 0.15s;
-            letter-spacing: 0.2px;
-            font-family: inherit;
         }
-        .abstract-toggle:hover { background: #418adf; color: #fff; border-color: #418adf; }
-        .abstract-toggle .chevron {
-            display: inline-block;
-            font-size: 10px;
-            transition: transform 0.25s cubic-bezier(0.4,0,0.2,1);
-        }
-        .abstract-toggle.open .chevron { transform: rotate(90deg); }
+        .pub-links a:hover { color: #f09228; }
+        .pub-links .sep { color: #ccc; margin: 0 2px; }
+        .abstract-link { cursor: pointer; }
         .abstract-body {
             overflow: hidden;
             max-height: 0;
             opacity: 0;
-            transition: max-height 0.35s cubic-bezier(0.4,0,0.2,1), opacity 0.28s ease;
+            transition: max-height 0.35s cubic-bezier(0.4,0,0.2,1), opacity 0.28s ease, margin-top 0.25s ease;
         }
-        .abstract-body.open { max-height: 400px; opacity: 1; }
+        .abstract-body.open { max-height: 400px; opacity: 1; margin-top: 8px; }
         .abstract-text {
-            margin-top: 12px;
             font-size: 13.5px;
-            color: #3a3a3a;
+            color: #444;
             line-height: 1.65;
-            padding: 10px 14px;
-            background: rgba(65,138,223,0.06);
-            border-radius: 6px;
-            border-left: 2px solid #b8ccec;
+            padding-left: 12px;
+            border-left: 2px solid #e0e0e0;
         }
 
         /* ── Footer ── */
@@ -294,8 +248,6 @@
             .proj-thumb { width: 100%; }
             .proj-thumb img { width: 100%; }
             .site-nav .brand { display: none; }
-            .pub-header { flex-direction: column; }
-            .pub-actions { max-width: 100%; justify-content: flex-start; margin-top: 6px; }
         }
     </style>
 </head>
@@ -335,10 +287,11 @@
                     Prior to this, I interned at <a href="https://www.iiit.ac.in/" target="_blank">IIIT Hyderabad</a> (with <a href="https://sites.google.com/view/tejaspbodas/" target="_blank">Dr. Tejas Bodas</a>) and <a href="https://www.irit.fr/en/home/" target="_blank">IRIT, Toulouse</a> (with <a href="https://www.irit.fr/~Urtzi.Ayesta/" target="_blank">Dr. Urtzi Ayesta</a>), the latter supported by the <a href="https://www.inde.campusfrance.org/charpak-lab-scholarship" target="_blank">Charpak Excellence Scholarship</a>.
                 </p>
                 <div class="profile-links">
-                    <a href="mailto:akash20041764591@gmail.com" target="_blank">Email</a>
-                    <a href="https://drive.google.com/file/d/1l3oBU-zzhbPDugwjJnki6kt1cyzC_exH/view?usp=sharing" target="_blank">Resume</a>
-                    <a href="https://www.linkedin.com/in/akash-s-473781263/" target="_blank">LinkedIn</a>
-                    <a href="https://github.com/akash1764591" target="_blank">GitHub</a>
+                    <a href="mailto:akash20041764591@gmail.com">email</a><span class="sep">/</span>
+                    <a href="https://drive.google.com/file/d/1l3oBU-zzhbPDugwjJnki6kt1cyzC_exH/view?usp=sharing" target="_blank">cv</a><span class="sep">/</span>
+                    <a href="https://scholar.google.com/citations?user=j8UvD20AAAAJ&amp;hl=en" target="_blank">scholar</a><span class="sep">/</span>
+                    <a href="https://github.com/akash1764591" target="_blank">github</a><span class="sep">/</span>
+                    <a href="https://www.linkedin.com/in/akash-s-473781263/" target="_blank">linkedin</a>
                 </div>
             </div>
         </div>
@@ -410,32 +363,19 @@
         <div class="section" id="publications">
             <div class="section-title">Publications</div>
 
-            <div class="pub-entry">
-                <div class="pub-header">
-                    <div class="pub-title">Best-of-Both-Worlds Multi-Dueling Bandits: Unified Algorithms for Stochastic and Adversarial Preferences under Condorcet and Borda Objectives</div>
-                    <div class="pub-actions">
-                        <a href="DATA/Multi_Dueling_Bandits.pdf" target="_blank" class="pub-action-btn" title="Full paper PDF">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-                            Full Paper
-                        </a>
-                        <a href="DATA/Multi_Dueling_Bandits_extended_abstract.pdf" target="_blank" class="pub-action-btn" title="Extended abstract PDF">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-                            Ext. Abstract
-                        </a>
-                        <a href="https://arxiv.org/abs/2603.18972" target="_blank" class="pub-action-btn" title="arXiv">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-                            arXiv
-                        </a>
-                        <button class="abstract-toggle" onclick="
-                            this.classList.toggle('open');
-                            this.closest('.pub-entry').querySelector('.abstract-body').classList.toggle('open');
-                        ">
-                            <span class="chevron">&#9658;</span> Summary
-                        </button>
-                    </div>
+            <div class="pub-item">
+                <div class="pub-title">
+                    <a href="https://arxiv.org/abs/2603.18972" target="_blank">Best-of-Both-Worlds Multi-Dueling Bandits: Unified Algorithms for Stochastic and Adversarial Preferences under Condorcet and Borda Objectives</a>
                 </div>
                 <div class="pub-authors"><strong>S Akash</strong>, Pratik Gajane, Jawar Singh</div>
-                <div class="pub-venue">Full paper accepted at <a href="https://rl-conference.cc/" target="_blank">RLC 2026</a> &nbsp;&middot;&nbsp; Extended abstract accepted at <a href="https://probml.cc/" target="_blank">ProbML @ ICML 2026</a> (Workshop Track)</div>
+                <div class="pub-venue"><em>Reinforcement Learning Conference (<a href="https://rl-conference.cc/" target="_blank">RLC</a>)</em>, 2026</div>
+                <div class="pub-venue"><em><a href="https://probml.cc/" target="_blank">ProbML</a> Workshop @ ICML</em>, 2026 &nbsp;(extended abstract)</div>
+                <div class="pub-links">
+                    <a href="https://arxiv.org/abs/2603.18972" target="_blank">arXiv</a><span class="sep"> / </span>
+                    <a href="DATA/Multi_Dueling_Bandits.pdf" target="_blank">paper</a><span class="sep"> / </span>
+                    <a href="DATA/Multi_Dueling_Bandits_extended_abstract.pdf" target="_blank">ext. abstract</a><span class="sep"> / </span>
+                    <a class="abstract-link" onclick="this.closest('.pub-item').querySelector('.abstract-body').classList.toggle('open');">abstract</a>
+                </div>
                 <div class="abstract-body">
                     <div class="abstract-text">
                         Multi-dueling bandits — where a learner selects multiple arms per round and observes only the winner — arise naturally in ranking and recommendation systems. We ask: can a single algorithm perform optimally in both stochastic and adversarial environments, without knowing which regime it faces? We answer affirmatively, giving the first best-of-both-worlds algorithms for multi-dueling bandits under both Condorcet and Borda objectives, with matching lower bounds for the Condorcet setting and near optimal bounds for the Borda setting.
