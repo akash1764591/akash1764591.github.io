@@ -2,7 +2,18 @@
 <html lang="en">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <title>S Akash</title>
+    <title>Akash | Home</title>
+
+    <!-- Set theme before paint (no flash) -->
+    <script>
+      (function () {
+        try {
+          var t = localStorage.getItem('theme');
+          if (!t) t = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+          document.documentElement.setAttribute('data-theme', t);
+        } catch (e) {}
+      })();
+    </script>
 
     <meta name="author" content="Akash Sudarsana Narasimhan">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -15,298 +26,386 @@
     <meta property="og:type" content="website">
     <meta name="twitter:card" content="summary">
 
-    <!-- Bootstrap 5 -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
     <!-- MathJax -->
     <script>MathJax = { tex: { inlineMath: [['$','$']] } };</script>
     <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
 
-    <link rel="icon" type="image/png" href="images/favicon.png">
+    <link rel="icon" type="image/svg+xml" href="images/favicon.svg">
+
+    <!-- Fonts & icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400;1,500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.9.1/css/academicons.min.css">
 
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,400;0,700;1,400&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&display=swap');
+        :root {
+            --ink:      #1a1d22;
+            --body:     #292d33;
+            --muted:    #80868f;
+            --faint:    #aeb4bb;
+            --accent:   #3a6ea5;
+            --accent-2: #2f6df0;
+            --line:     #eceef1;
+            --bg:       #ffffff;
+            --card:     #ffffff;
+            --nav-bg:   rgba(255,255,255,0.86);
+            --code-bg:  #f3f4f6;
+            --code-fg:  #d1456b;
+        }
 
-        *, body { font-family: 'Lato', Verdana, Helvetica, sans-serif; font-size: 15px; color: #333; }
-        .serif { font-family: 'Source Serif 4', 'Source Serif Pro', Georgia, 'Times New Roman', serif; }
+        [data-theme="dark"] {
+            --ink:      #f0f2f6;
+            --body:     #bcc3cd;
+            --muted:    #79828d;
+            --faint:    #565d67;
+            --accent:   #8fb3e6;
+            --accent-2: #b9d2f5;
+            --line:     #262b33;
+            --bg:       #0e1116;
+            --card:     #161a20;
+            --nav-bg:   rgba(14,17,22,0.85);
+            --code-bg:  #1c222b;
+            --code-fg:  #ff8fb0;
+        }
 
+        * { box-sizing: border-box; }
         html { scroll-behavior: smooth; }
+        body {
+            margin: 0;
+            font-family: 'Raleway', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            font-weight: 400;
+            font-size: 15.5px;
+            line-height: 1.65;
+            color: var(--body);
+            background: var(--bg);
+            transition: background-color .25s ease, color .25s ease;
+            text-rendering: optimizeLegibility;
+        }
 
-        a { color: #418adf; text-decoration: none; }
-        a:hover { color: #f09228; text-decoration: none; }
+        a { color: var(--accent); text-decoration: none; transition: color .15s ease; }
+        a:hover { color: var(--accent-2); }
+        em { font-style: italic; color: var(--ink); }
 
         /* ── Sticky nav ── */
         .site-nav {
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            background: #fff;
-            border-bottom: 1px solid #e8e8e8;
-            padding: 10px 0;
+            position: sticky; top: 0; z-index: 100;
+            background: var(--nav-bg);
+            backdrop-filter: saturate(180%) blur(12px);
+            -webkit-backdrop-filter: saturate(180%) blur(12px);
+            border-top: 1px solid var(--line);
+            border-bottom: 1px solid var(--line);
         }
         .site-nav .inner {
-            max-width: 850px;
-            margin: 0 auto;
-            padding: 0 24px;
-            display: flex;
-            align-items: center;
-            gap: 4px;
+            max-width: 840px; margin: 0 auto; padding: 15px 20px;
+            display: flex; align-items: center; justify-content: flex-start; gap: 4px;
         }
-        .site-nav .brand {
-            font-family: 'Source Serif 4', 'Source Serif Pro', Georgia, serif;
-            font-weight: 700;
-            font-size: 18px;
-            color: #222;
-            margin-right: auto;
-            text-decoration: none;
-            letter-spacing: -0.2px;
-        }
-        .site-nav .brand:hover { color: #418adf; }
         .site-nav a.nav-link {
-            color: #555;
-            font-size: 14px;
-            font-weight: 600;
-            padding: 5px 10px;
-            transition: color 0.15s;
+            color: var(--muted);
+            font-size: 12px; font-weight: 600;
+            text-transform: uppercase; letter-spacing: .2em;
+            padding: 5px 16px; border-radius: 6px;
+            transition: color .15s ease;
         }
-        .site-nav a.nav-link:hover { color: #418adf; }
+        .site-nav a.nav-link:hover { color: var(--ink); }
+        .site-nav a.nav-link.active { color: var(--accent); }
 
         /* ── Page wrapper ── */
-        .page { max-width: 850px; margin: 0 auto; padding: 0 24px 40px; }
+        .page { max-width: 840px; margin: 0 auto; padding: 0 28px 60px; }
+        .page-head { padding-bottom: 6px; }
+
+        /* ── Reveal on scroll ── */
+        .reveal { opacity: 0; transform: translateY(18px); transition: opacity .65s cubic-bezier(.2,.6,.2,1), transform .65s cubic-bezier(.2,.6,.2,1); }
+        .reveal.in { opacity: 1; transform: none; }
 
         /* ── Profile ── */
         .profile {
-            display: flex;
-            gap: 36px;
-            align-items: center;
-            padding: 40px 0 28px;
+            display: flex; gap: 42px; align-items: center;
+            padding: 40px 0 44px;
         }
-        .profile img {
-            width: 155px;
-            height: 155px;
-            border-radius: 50%;
-            object-fit: cover;
-            object-position: top center;
-            flex-shrink: 0;
-            border: 1px solid #e5e5e5;
+        .profile .photo {
+            position: relative; flex-shrink: 0;
+        }
+        .profile .photo img {
+            width: 220px; height: 165px; border-radius: 0;
+            object-fit: cover; object-position: center 32%;
+            display: block; border: 1px solid var(--line);
         }
         .profile-text h1 {
-            font-family: 'Source Serif 4', 'Source Serif Pro', Georgia, serif;
-            font-size: 32px;
-            font-weight: 700;
-            color: #111;
-            margin: 0 0 12px;
-            letter-spacing: -0.5px;
+            font-size: 32px; font-weight: 700; color: var(--ink);
+            margin: 0 0 4px; letter-spacing: -0.6px; line-height: 1.15;
+            white-space: nowrap;
         }
-        .profile-text p { margin-bottom: 10px; line-height: 1.6; }
-        .profile-links {
-            margin-top: 14px;
-            font-size: 14px;
-            color: #aaa;
-            letter-spacing: 0.3px;
+        .profile-text .tagline {
+            font-size: 14.5px; font-weight: 600; color: var(--accent);
+            margin: 0 0 7px;
         }
-        .profile-links a {
-            color: #418adf;
-            font-weight: 600;
+        .profile-text .tagline a { color: var(--accent); }
+        .profile-text .tagline a:hover { color: var(--accent-2); }
+        .profile-text .affil { margin: 0; font-size: 14.5px; color: var(--body); line-height: 1.6; }
+        .profile-text .affil a { color: var(--body); border-bottom: 1px solid var(--line); }
+        .profile-text .affil a:hover { color: var(--accent); border-color: var(--accent); }
+        #bio p { margin: 0 0 20px; line-height: 1.72; }
+        #bio p:last-child { margin-bottom: 0; }
+
+        /* Social icon row */
+        .social { margin-top: 20px; display: flex; gap: 8px; }
+        .social a {
+            display: inline-flex; align-items: center; justify-content: center;
+            width: 38px; height: 38px; border-radius: 9px;
+            border: 1px solid var(--line); color: var(--muted);
+            font-size: 17px; background: var(--card);
+            transition: transform .18s ease, color .18s ease, border-color .18s ease, box-shadow .18s ease;
         }
-        .profile-links a:hover { color: #f09228; }
-        .profile-links .sep { color: #ccc; margin: 0 4px; }
+        .social a:hover {
+            color: var(--accent); border-color: #cfdcfb;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 18px rgba(47,109,240,.14);
+        }
 
         /* ── Section ── */
-        .section { margin-top: 32px; }
+        .section { margin-top: 52px; }
         .section-title {
-            font-family: 'Source Serif 4', 'Source Serif Pro', Georgia, serif;
-            font-size: 24px;
-            font-weight: 700;
-            color: #111;
-            padding-bottom: 6px;
-            border-bottom: 1px solid #ddd;
-            margin-bottom: 18px;
-            letter-spacing: -0.3px;
+            display: flex; align-items: center; gap: 18px;
+            font-size: 17px; font-weight: 700; color: var(--ink);
+            text-transform: uppercase; letter-spacing: .16em;
+            margin-bottom: 26px;
+        }
+        .section-title::after {
+            content: ''; flex: 1; height: 1px; background: var(--line);
         }
 
         /* ── News ── */
         .news-scroll {
-            max-height: 300px;
-            overflow-y: auto;
-            padding-right: 4px;
+            max-height: 320px; overflow-y: auto; padding-right: 8px;
         }
-        .news-scroll::-webkit-scrollbar { width: 4px; }
-        .news-scroll::-webkit-scrollbar-thumb { background: #ccc; border-radius: 2px; }
+        .news-scroll::-webkit-scrollbar { width: 5px; }
+        .news-scroll::-webkit-scrollbar-thumb { background: #e2e4e8; border-radius: 3px; }
+        .news-scroll::-webkit-scrollbar-thumb:hover { background: #cfd2d8; }
         .news-row {
-            display: flex;
-            gap: 16px;
-            padding: 8px 0;
-            border-bottom: 1px solid #f2f2f2;
-            line-height: 1.5;
+            display: flex; gap: 20px; padding: 11px 0;
+            border-bottom: 1px solid var(--line); line-height: 1.55;
         }
         .news-row:last-child { border-bottom: none; }
         .news-date {
-            color: #666;
-            font-weight: 600;
-            font-size: 13px;
-            min-width: 72px;
-            padding-top: 1px;
+            color: var(--accent); font-weight: 600;
+            font-size: 11.5px; letter-spacing: .08em; text-transform: uppercase;
+            min-width: 78px; padding-top: 3px; flex-shrink: 0;
         }
 
-        /* ── Cards (experience & projects) ── */
-        .card-entry {
-            display: flex;
-            gap: 22px;
-            align-items: flex-start;
-            padding: 14px 0;
-            border-bottom: 1px dashed #ececec;
-        }
-        .card-entry:last-child { border-bottom: none; }
-        .card-logo {
-            flex-shrink: 0;
-            width: 90px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .card-logo img { width: 80px; max-height: 80px; object-fit: contain; }
-        .card-body { flex: 1; }
-        .card-title {
-            font-weight: 700;
-            font-size: 15.5px;
-            color: #222;
-            margin-bottom: 2px;
-        }
-        .card-subtitle { font-size: 13px; color: #888; margin-bottom: 6px; }
-        .card-body p { margin: 4px 0; line-height: 1.55; color: #444; }
-
-        /* project thumbnail */
-        .proj-thumb {
-            flex-shrink: 0;
-            width: 120px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .proj-thumb img { width: 110px; border-radius: 4px; object-fit: cover; }
-
-        /* ── Publication (Barron-style) ── */
+        /* ── Publications ── */
         .pub-item {
-            padding: 14px 0 16px;
-            border-bottom: 1px dashed #e4e4e4;
+            padding: 0 0 22px; margin-bottom: 22px;
+            border-bottom: 1px solid var(--line);
         }
-        .pub-item:last-child { border-bottom: none; }
+        .pub-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
         .pub-title {
-            font-family: 'Source Serif 4', 'Source Serif Pro', Georgia, serif;
-            font-size: 17px;
-            font-weight: 700;
-            color: #222;
-            line-height: 1.35;
-            margin-bottom: 4px;
-            letter-spacing: -0.1px;
+            font-size: 18px; font-weight: 700; color: var(--ink);
+            line-height: 1.38; margin-bottom: 6px; letter-spacing: -0.2px;
         }
-        .pub-title a { color: #222; }
-        .pub-title a:hover { color: #418adf; }
-        .pub-authors { font-size: 14px; color: #333; margin-bottom: 1px; line-height: 1.5; }
-        .pub-venue { font-size: 13.5px; color: #555; line-height: 1.5; }
-        .pub-venue em { color: #418adf; font-style: italic; }
+        .pub-title a { color: var(--ink); }
+        .pub-title a:hover { color: var(--accent); }
+        .pub-authors { font-size: 14.5px; color: var(--body); margin-bottom: 2px; }
+        .pub-authors strong { color: var(--ink); font-weight: 700; }
+        .pub-venue { font-size: 13.5px; color: var(--body); }
+        .pub-venue em { color: var(--body); font-style: italic; }
         .pub-links {
-            margin-top: 8px;
-            font-size: 13.5px;
-            color: #aaa;
-            letter-spacing: 0.5px;
+            margin-top: 11px; display: flex; flex-wrap: wrap; gap: 8px;
         }
-        .pub-links a {
-            color: #418adf;
-            font-weight: 600;
+        .pub-links a, .abstract-link {
+            font-size: 11.5px; font-weight: 600; text-transform: uppercase;
+            letter-spacing: .07em; color: var(--accent);
+            padding: 4px 12px; border: 1px solid var(--line); border-radius: 20px;
+            cursor: pointer; transition: all .15s ease; background: var(--card);
         }
-        .pub-links a:hover { color: #f09228; }
-        .pub-links .sep { color: #ccc; margin: 0 2px; }
-        .abstract-link { cursor: pointer; }
+        .pub-links a:hover, .abstract-link:hover {
+            color: #fff; background: var(--accent); border-color: var(--accent);
+        }
         .abstract-body {
-            overflow: hidden;
-            max-height: 0;
-            opacity: 0;
-            transition: max-height 0.35s cubic-bezier(0.4,0,0.2,1), opacity 0.28s ease, margin-top 0.25s ease;
+            overflow: hidden; max-height: 0; opacity: 0;
+            transition: max-height .4s cubic-bezier(.4,0,.2,1), opacity .3s ease, margin-top .25s ease;
         }
-        .abstract-body.open { max-height: 400px; opacity: 1; margin-top: 8px; }
+        .abstract-body.open { max-height: 460px; opacity: 1; margin-top: 14px; }
         .abstract-text {
-            font-size: 13.5px;
-            color: #444;
-            line-height: 1.65;
-            padding-left: 12px;
-            border-left: 2px solid #e0e0e0;
+            font-size: 14px; color: var(--body); line-height: 1.7;
+            padding: 4px 0 4px 18px; border-left: 2px solid var(--accent);
+        }
+
+        /* ── Timeline (experience) ── */
+        .timeline { border-left: 2px solid var(--line); margin-left: 12px; padding-left: 0; }
+        .tl-item { position: relative; padding: 0 0 30px 34px; }
+        .tl-item:last-child { padding-bottom: 0; }
+        .tl-item::before {
+            content: ''; position: absolute; left: -8px; top: 4px;
+            width: 13px; height: 13px; border-radius: 50%;
+            background: var(--card); border: 2.5px solid var(--accent);
+        }
+        .tl-head {
+            display: flex; align-items: center; gap: 14px; margin-bottom: 4px;
+        }
+        .tl-logo {
+            width: 40px; height: 40px; border-radius: 9px; flex-shrink: 0;
+            border: 1px solid var(--line); background: var(--card);
+            display: flex; align-items: center; justify-content: center; overflow: hidden;
+        }
+        .tl-logo img { width: 100%; height: 100%; object-fit: contain; padding: 4px; }
+        .tl-role { font-weight: 700; font-size: 15.5px; color: var(--ink); line-height: 1.3; }
+        .tl-role .org { color: var(--accent); }
+        .tl-meta { font-size: 12px; color: var(--muted); letter-spacing: .02em; }
+        .tl-item p { margin: 6px 0 0; line-height: 1.65; }
+
+        /* ── Projects grid ── */
+        .proj-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 22px;
+        }
+        .proj-card {
+            border: 1px solid var(--line); border-radius: 14px; overflow: hidden;
+            background: #fff; display: flex; flex-direction: column;
+            transition: transform .22s ease, box-shadow .22s ease, border-color .22s ease;
+        }
+        .proj-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 16px 38px rgba(31,35,40,.10);
+            border-color: #e0e3e8;
+        }
+        .proj-thumb { height: 158px; overflow: hidden; background: #f7f8fa; }
+        .proj-thumb img {
+            width: 100%; height: 100%; object-fit: cover;
+            transition: transform .4s ease;
+        }
+        .proj-card:hover .proj-thumb img { transform: scale(1.05); }
+        .proj-body { padding: 16px 18px 18px; flex: 1; }
+        .proj-title {
+            font-weight: 700; font-size: 15px; color: var(--ink);
+            margin-bottom: 6px; line-height: 1.35;
+        }
+        .proj-title a { font-weight: 500; font-size: 12px; }
+        .proj-body p { margin: 0; font-size: 13.5px; line-height: 1.6; color: var(--body); }
+        code {
+            font-family: ui-monospace, 'SF Mono', Menlo, monospace;
+            font-size: .86em; background: var(--code-bg); color: var(--code-fg);
+            padding: 1px 5px; border-radius: 4px;
         }
 
         /* ── Footer ── */
-        .footer { margin-top: 40px; padding-top: 16px; border-top: 1px solid #eee; font-size: 13px; color: #999; }
-        .footer a { color: #999; }
-        .footer a:hover { color: #418adf; }
+        .footer {
+            margin-top: 64px; padding-top: 22px; border-top: 1px solid var(--line);
+            font-size: 12.5px; color: var(--faint); text-align: center; line-height: 1.7;
+        }
+        .footer a { color: var(--muted); }
+        .footer a:hover { color: var(--accent); }
 
-        @media (max-width: 600px) {
-            .profile { flex-direction: column; align-items: center; text-align: center; }
-            .profile-links { justify-content: center; }
-            .card-entry { flex-direction: column; }
-            .card-logo { width: 100%; }
-            .proj-thumb { width: 100%; }
-            .proj-thumb img { width: 100%; }
-            .site-nav .brand { display: none; }
+        /* ── Theme toggle ── */
+        .theme-toggle {
+            margin-left: auto;
+            background: transparent; border: 1px solid var(--line);
+            color: var(--muted); cursor: pointer;
+            width: 34px; height: 34px; border-radius: 8px;
+            display: inline-flex; align-items: center; justify-content: center;
+            font-size: 13.5px; transition: color .15s ease, border-color .15s ease;
+        }
+        .theme-toggle:hover { color: var(--ink); border-color: var(--muted); }
+
+        /* ── Dark-mode fine-tuning ── */
+        [data-theme="dark"] .social a:hover { border-color: rgba(110,160,255,.45); box-shadow: 0 8px 18px rgba(110,160,255,.12); }
+        [data-theme="dark"] .pub-links a:hover, [data-theme="dark"] .abstract-link:hover { color: var(--bg); }
+        [data-theme="dark"] .news-scroll::-webkit-scrollbar-thumb { background: #2f3640; }
+        [data-theme="dark"] .news-scroll::-webkit-scrollbar-thumb:hover { background: #3b434f; }
+        [data-theme="dark"] .profile .photo img { filter: brightness(.92); }
+
+        /* ── Responsive ── */
+        @media (max-width: 640px) {
+            .profile { flex-direction: column; text-align: center; gap: 26px; padding: 44px 0 36px; }
+            .social { justify-content: center; }
+            .proj-grid { grid-template-columns: 1fr; }
+            .site-nav .inner { padding: 12px 14px; gap: 2px; }
+            .site-nav a.nav-link { padding: 4px 9px; letter-spacing: .12em; font-size: 11px; }
+            .page { padding: 0 20px 48px; }
+            .profile-text h1 { font-size: 27px; white-space: normal; }
+            .news-date { min-width: 66px; }
         }
     </style>
 </head>
 
 <body>
 
-    <!-- Sticky nav -->
+    <div class="page page-head">
+
+        <!-- Profile -->
+        <div class="profile reveal">
+            <div class="photo">
+                <img src="images/akash_photo.png" alt="Akash Sudarsana Narasimhan">
+            </div>
+            <div class="profile-text">
+                <h1>Akash Sudarsana Narasimhan</h1>
+                <div class="tagline">ML Research @ <a href="https://www.latentforce.ai/" target="_blank">LatentForce</a></div>
+                <p class="affil">
+                    B.Tech in Electrical Engineering, <a href="https://www.iitp.ac.in/" target="_blank">IIT Patna</a>
+                    &nbsp;&middot;&nbsp; Graduated May&nbsp;'26
+                </p>
+                <div class="social">
+                    <a href="mailto:akash20041764591@gmail.com" title="Email" aria-label="Email"><i class="fa-solid fa-envelope"></i></a>
+                    <a href="https://drive.google.com/file/d/1l3oBU-zzhbPDugwjJnki6kt1cyzC_exH/view?usp=sharing" target="_blank" title="CV" aria-label="CV"><i class="fa-solid fa-file-lines"></i></a>
+                    <a href="https://scholar.google.com/citations?user=j8UvD20AAAAJ&amp;hl=en" target="_blank" title="Google Scholar" aria-label="Google Scholar"><i class="ai ai-google-scholar-square"></i></a>
+                    <a href="https://github.com/akash1764591" target="_blank" title="GitHub" aria-label="GitHub"><i class="fa-brands fa-github"></i></a>
+                    <a href="https://www.linkedin.com/in/akash-s-473781263/" target="_blank" title="LinkedIn" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>
+                </div>
+            </div>
+        </div>
+
+    </div><!-- .page-head -->
+
+    <!-- Section nav (docks to top on scroll) -->
     <nav class="site-nav">
         <div class="inner">
-            <a class="brand" href="#">S Akash</a>
+            <a class="nav-link" href="#bio">Bio</a>
             <a class="nav-link" href="#news">News</a>
             <a class="nav-link" href="#publications">Publications</a>
             <a class="nav-link" href="#experience">Experience</a>
-            <a class="nav-link" href="#projects">Projects</a>
-            <a class="nav-link" href="mailto:akash20041764591@gmail.com">Contact</a>
+            <button class="theme-toggle" id="themeToggle" type="button" aria-label="Toggle dark mode" title="Toggle light / dark">
+                <i class="fa-solid fa-moon"></i>
+            </button>
         </div>
     </nav>
 
     <div class="page">
 
-        <!-- Profile -->
-        <div class="profile">
-            <img src="images/akash_photo.png" alt="Akash Sudarsana Narasimhan">
-            <div class="profile-text">
-                <h1>Akash Sudarsana Narasimhan</h1>
-                <p>
-                    Hello! I'm Akash, a recent Electrical Engineering graduate from
-                    <a href="https://www.iitp.ac.in/" target="_blank">IIT Patna</a>, 
-                    currently working on ML Research at <a href="https://www.latentforce.ai/" target="_blank">LatentForce</a>.
-                    My research interests revolve around sequential decision-making problems especially
-                    <em>multi-armed bandits</em> and <em>reinforcement learning</em>.
-                </p>
-                <p>
-                    My bachelor thesis (with <a href="https://pratikgajane.github.io/" target="_blank">Dr. Pratik Gajane</a>) on <em>multi-dueling bandits</em> [<a href="https://rl-conference.cc/" target="_blank">RLC'26</a>] gives the first best-of-both-worlds algorithms, via a black-box reduction that converts any dueling bandit algorithm into a multi-dueling one. 
-                </p>    
-                <p>    
-                    Prior to this, I interned at <a href="https://www.iiit.ac.in/" target="_blank">IIIT Hyderabad</a> (with <a href="https://sites.google.com/view/tejaspbodas/" target="_blank">Dr. Tejas Bodas</a>) and <a href="https://www.irit.fr/en/home/" target="_blank">IRIT, Toulouse</a> (with <a href="https://www.irit.fr/~Urtzi.Ayesta/" target="_blank">Dr. Urtzi Ayesta</a>), the latter supported by the <a href="https://www.inde.campusfrance.org/charpak-lab-scholarship" target="_blank">Charpak Excellence Scholarship</a>.
-                </p>
-                <div class="profile-links">
-                    <a href="mailto:akash20041764591@gmail.com">email</a><span class="sep">/</span>
-                    <a href="https://drive.google.com/file/d/1l3oBU-zzhbPDugwjJnki6kt1cyzC_exH/view?usp=sharing" target="_blank">cv</a><span class="sep">/</span>
-                    <a href="https://scholar.google.com/citations?user=j8UvD20AAAAJ&amp;hl=en" target="_blank">scholar</a><span class="sep">/</span>
-                    <a href="https://github.com/akash1764591" target="_blank">github</a><span class="sep">/</span>
-                    <a href="https://www.linkedin.com/in/akash-s-473781263/" target="_blank">linkedin</a>
-                </div>
-            </div>
+        <!-- Bio -->
+        <div class="section reveal" id="bio">
+            <div class="section-title">Bio</div>
+            <p>
+                Hello! I'm Akash, a recent Electrical Engineering graduate from
+                IIT Patna, currently working on ML Research at LatentForce.
+                My research interests revolve around sequential decision-making problems, especially
+                <em>multi-armed bandits</em> and <em>reinforcement learning</em>.
+            </p>
+            <p>
+                My bachelor thesis (with <a href="https://pratikgajane.github.io/" target="_blank">Dr. Pratik Gajane</a>) on <em>multi-dueling bandits</em> [<a href="https://rl-conference.cc/" target="_blank">RLC'26</a>] gives the first best-of-both-worlds algorithms, via a black-box reduction that converts any dueling bandit algorithm into a multi-dueling one.
+            </p>
+            <p>
+                Prior to this, I interned at <a href="https://www.iiit.ac.in/" target="_blank">IIIT Hyderabad</a> (with <a href="https://sites.google.com/view/tejaspbodas/" target="_blank">Dr. Tejas Bodas</a>) and <a href="https://www.irit.fr/en/home/" target="_blank">IRIT, Toulouse</a> (with <a href="https://www.irit.fr/~Urtzi.Ayesta/" target="_blank">Dr. Urtzi Ayesta</a>), the latter supported by the <a href="https://www.inde.campusfrance.org/charpak-lab-scholarship" target="_blank">Charpak Excellence Scholarship</a>.
+            </p>
+            <p>
+                Feel free to reach out to me via <a href="mailto:akash20041764591@gmail.com">email</a>!
+            </p>
         </div>
 
         <!-- News -->
-        <div class="section" id="news">
+        <div class="section reveal" id="news">
             <div class="section-title">News</div>
             <div class="news-scroll">
                 <div class="news-row">
                     <span class="news-date">May 2026</span>
-                    <span>Paper accepted at <a href="https://rl-conference.cc/" target="_blank"><strong>RLC 2026</strong></a> and  <a href="https://probml.cc/" target="_blank"><strong>ProbML @ ICML 2026</strong></a>!</span>
+                    <span>Our preprint <em>"Fairness in Two-Player Zero-Sum Games with Bandit Feedback"</em> is now on <a href="https://arxiv.org/abs/2606.01159" target="_blank">arXiv</a>!</span>
+                </div>
+                <div class="news-row">
+                    <span class="news-date">May 2026</span>
+                    <span>Paper accepted at <a href="https://rl-conference.cc/" target="_blank">RLC 2026</a> and <a href="https://probml.cc/" target="_blank">ProbML @ ICML 2026</a>!</span>
                 </div>
                 <div class="news-row">
                     <span class="news-date">Mar 2026</span>
-                    <span>My paper on multi-dueling bandits with <a href="https://pratikgajane.github.io/" target="_blank">Pratik Gajane</a> now on arXiv! Check it out <a href="https://arxiv.org/abs/2603.18972" target="_blank">here</a>.</span>
+                    <span>My paper on multi-dueling bandits with Pratik Gajane now on arXiv! Check it out <a href="https://arxiv.org/abs/2603.18972" target="_blank">here</a>.</span>
                 </div>
                 <div class="news-row">
                     <span class="news-date">Jan 2026</span>
@@ -360,21 +459,39 @@
         </div>
 
         <!-- Publications -->
-        <div class="section" id="publications">
+        <div class="section reveal" id="publications">
             <div class="section-title">Publications</div>
+
+            <div class="pub-list">
+
+            <div class="pub-item">
+                <div class="pub-title">
+                    <a href="https://arxiv.org/abs/2606.01159" target="_blank">Fairness in Two-Player Zero-Sum Games with Bandit Feedback</a>
+                </div>
+                <div class="pub-authors"><strong>S Akash</strong>, Pratik Gajane</div>
+                <div class="pub-links">
+                    <a href="https://arxiv.org/abs/2606.01159" target="_blank">arXiv</a>
+                    <span class="abstract-link" onclick="this.closest('.pub-item').querySelector('.abstract-body').classList.toggle('open');">abstract</span>
+                </div>
+                <div class="abstract-body">
+                    <div class="abstract-text">
+                        We study two-player zero-sum games with bandit feedback under a fairness constraint that requires every action to be played at least a minimum fraction of the time. Such a constraint typically turns the optimal strategy from a single action into a mixture, which is harder to learn. Our key tool is a reparametrization that rewrites any fair game as an ordinary zero-sum game on a modified payoff matrix, so classical equilibrium theory carries over directly. With it, we bound the price of fairness, propose an Explore-Then-Commit algorithm with provable regret guarantees, and obtain a sharper, instance-dependent rate when the fair solution concentrates on a single dominant action.
+                    </div>
+                </div>
+            </div>
 
             <div class="pub-item">
                 <div class="pub-title">
                     <a href="https://arxiv.org/abs/2603.18972" target="_blank">Best-of-Both-Worlds Multi-Dueling Bandits: Unified Algorithms for Stochastic and Adversarial Preferences under Condorcet and Borda Objectives</a>
                 </div>
                 <div class="pub-authors"><strong>S Akash</strong>, Pratik Gajane, Jawar Singh</div>
-                <div class="pub-venue"><em>Reinforcement Learning Conference (<a href="https://rl-conference.cc/" target="_blank">RLC</a>)</em>, 2026</div>
-                <div class="pub-venue"><em><a href="https://probml.cc/" target="_blank">ProbML</a> Workshop @ ICML</em>, 2026 &nbsp;(extended abstract)</div>
+                <div class="pub-venue"><em>Reinforcement Learning Conference (<strong>RLC</strong>)</em>, 2026</div>
+                <div class="pub-venue"><em>ProbML Workshop @ ICML</em>, 2026 &nbsp;(extended abstract)</div>
                 <div class="pub-links">
-                    <a href="https://arxiv.org/abs/2603.18972" target="_blank">arXiv</a><span class="sep"> / </span>
-                    <a href="DATA/Multi_Dueling_Bandits.pdf" target="_blank">paper</a><span class="sep"> / </span>
-                    <a href="DATA/Multi_Dueling_Bandits_extended_abstract.pdf" target="_blank">ext. abstract</a><span class="sep"> / </span>
-                    <a class="abstract-link" onclick="this.closest('.pub-item').querySelector('.abstract-body').classList.toggle('open');">abstract</a>
+                    <a href="https://arxiv.org/abs/2603.18972" target="_blank">arXiv</a>
+                    <a href="DATA/Multi_Dueling_Bandits.pdf" target="_blank">paper</a>
+                    <a href="DATA/Multi_Dueling_Bandits_extended_abstract.pdf" target="_blank">ext. abstract</a>
+                    <span class="abstract-link" onclick="this.closest('.pub-item').querySelector('.abstract-body').classList.toggle('open');">abstract</span>
                 </div>
                 <div class="abstract-body">
                     <div class="abstract-text">
@@ -382,100 +499,115 @@
                     </div>
                 </div>
             </div>
+
+            </div><!-- .pub-list -->
         </div>
 
         <!-- Experience -->
-        <div class="section" id="experience">
+        <div class="section reveal" id="experience">
             <div class="section-title">Experience</div>
 
-            <div class="card-entry">
-                <div class="card-logo">
-                    <img src="images/latentforce_ai_logo.jpeg" alt="LatentForce">
-                </div>
-                <div class="card-body">
-                    <div class="card-title">Research Intern &nbsp;&middot;&nbsp; LatentForce</div>
-                    <div class="card-subtitle">Jan 2026 &ndash; Present</div>
+            <div class="timeline">
+                <div class="tl-item">
+                    <div class="tl-head">
+                        <div class="tl-logo"><img src="images/latentforce_ai_logo.jpeg" alt="LatentForce"></div>
+                        <div>
+                            <div class="tl-role">Research Intern <span class="org">&middot; LatentForce</span></div>
+                            <div class="tl-meta">Jan 2026 &ndash; Present</div>
+                        </div>
+                    </div>
                     <p>RL &times; LLMs.</p>
                 </div>
-            </div>
 
-            <div class="card-entry">
-                <div class="card-logo">
-                    <img src="images/irit_logo.webp" alt="IRIT Toulouse">
-                </div>
-                <div class="card-body">
-                    <div class="card-title">Research Intern &nbsp;&middot;&nbsp; IRIT Toulouse</div>
-                    <div class="card-subtitle">May 2025 &ndash; July 2025 &nbsp;&middot;&nbsp; Advisor: Dr. Urtzi Ayesta</div>
+                <div class="tl-item">
+                    <div class="tl-head">
+                        <div class="tl-logo"><img src="images/irit_logo.webp" alt="IRIT Toulouse"></div>
+                        <div>
+                            <div class="tl-role">Research Intern <span class="org">&middot; IRIT Toulouse</span></div>
+                            <div class="tl-meta">May 2025 &ndash; July 2025 &nbsp;&middot;&nbsp; Advisor: Dr. Urtzi Ayesta</div>
+                        </div>
+                    </div>
                     <p>Interned with the RMESS team, focusing on the development and analysis of Whittle index-based scheduling algorithms.</p>
                 </div>
-            </div>
 
-            <div class="card-entry">
-                <div class="card-logo">
-                    <img src="images/IIIT_Hyderabad_Logo-e1655116937986.jpg" alt="IIIT Hyderabad">
-                </div>
-                <div class="card-body">
-                    <div class="card-title">Research Intern &nbsp;&middot;&nbsp; IIIT Hyderabad</div>
-                    <div class="card-subtitle">May 2024 &ndash; July 2024 &nbsp;&middot;&nbsp; Advisor: Dr. Tejas Bodas</div>
+                <div class="tl-item">
+                    <div class="tl-head">
+                        <div class="tl-logo"><img src="images/IIIT_Hyderabad_Logo-e1655116937986.jpg" alt="IIIT Hyderabad"></div>
+                        <div>
+                            <div class="tl-role">Research Intern <span class="org">&middot; IIIT Hyderabad</span></div>
+                            <div class="tl-meta">May 2024 &ndash; July 2024 &nbsp;&middot;&nbsp; Advisor: Dr. Tejas Bodas</div>
+                        </div>
+                    </div>
                     <p>Developed RL algorithms for Markovian bandits and a hybrid algorithm to improve the sample efficiency of Q-learning.</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Projects -->
-        <div class="section" id="projects">
-            <div class="section-title">Selected Projects</div>
-
-            <div class="card-entry">
-                <div class="proj-thumb">
-                    <img src="images/resource-gathering.gif" alt="Fair MORL">
-                </div>
-                <div class="card-body">
-                    <div class="card-title">Fair Multi-objective RL &nbsp;<a href="https://github.com/akash1764591/Fair-MORL" target="_blank" style="font-weight:400; font-size:13px;">[code]</a></div>
-                    <p>Implemented the Fair Multi-Objective DQN <a href="https://rlj.cs.umass.edu/2025/papers/RLJ_RLC_2025_350.pdf" target="_blank">(FMDQ)</a> algorithm substituting standard linear scalarization with a Generalized Gini Welfare function. Designed to be fully compatible with the <code>morl-baselines</code> library for benchmarking.</p>
-                </div>
-            </div>
-
-            <div class="card-entry">
-                <div class="proj-thumb">
-                    <img src="images/basic_policy_graph.png" alt="PolicyChain">
-                </div>
-                <div class="card-body">
-                    <div class="card-title">PolicyChain &nbsp;<a href="https://github.com/akash1764591/PolicyChain" target="_blank" style="font-weight:400; font-size:13px;">[code]</a></div>
-                    <p>Python tool that flattens an MDP and policy into its induced Markov chain. Analyzes structural properties (communicating classes, ergodicity) and generates visualizations like policy graphs and heatmaps.</p>
-                </div>
-            </div>
-
-            <div class="card-entry">
-                <div class="proj-thumb">
-                    <img src="images/ml_challenge.webp" alt="Amazon ML Challenge">
-                </div>
-                <div class="card-body">
-                    <div class="card-title">Smart Product Pricing &mdash; Amazon ML Challenge &nbsp;<a href="https://github.com/akash1764591/ML-Challenge" target="_blank" style="font-weight:400; font-size:13px;">[code]</a></div>
-                    <p>Formulated price prediction as a text regression problem. Fine-tuned <code>deberta-v3-large</code> with a custom regression head, engineered a hybrid pipeline with Regex and LLM imputation.</p>
-                </div>
-            </div>
-
-            <div class="card-entry">
-                <div class="proj-thumb">
-                    <img src="images/QuantumCircuit.png" alt="Quantum Entanglement">
-                </div>
-                <div class="card-body">
-                    <div class="card-title">Thompson Sampling for Quantum Entanglement &nbsp;<a href="https://drive.google.com/file/d/15chsvNn4RnKJMvOSTah6UgsyZEF9St4P/view?usp=sharing" target="_blank" style="font-weight:400; font-size:13px;">[report]</a></div>
-                    <p>Formulated entanglement detection as a multi-armed bandit problem. Used Top-Two Thompson Sampling to select measurements efficiently, identifying entangled states with far fewer samples than traditional tomography.</p>
                 </div>
             </div>
         </div>
 
         <!-- Footer -->
         <div class="footer">
-            Website adapted from Jon Barron's <a href="https://jonbarron.info/" target="_blank">template</a>,
-            further modified by <a href="https://github.com/harshit2807161/harshit2807161.github.io" target="_blank">Harshit Dhankar</a>
-            and <a href="https://github.com/fliptrail/fliptrail.github.io" target="_blank">Amish Mittal</a>.
-            Feel free to clone the repo; please credit the original <a href="https://jonbarron.info/" target="_blank">author</a>.
+            Adapted from Jon Barron's <a href="https://jonbarron.info/" target="_blank">template</a>.
+            Feel free to clone the repo; please credit the original author.
         </div>
 
     </div><!-- .page -->
+
+    <script>
+        // Fade-up reveal on scroll
+        (function () {
+            var els = document.querySelectorAll('.reveal');
+            if (!('IntersectionObserver' in window)) {
+                els.forEach(function (el) { el.classList.add('in'); });
+                return;
+            }
+            var io = new IntersectionObserver(function (entries) {
+                entries.forEach(function (e) {
+                    if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+                });
+            }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+            els.forEach(function (el) { io.observe(el); });
+        })();
+
+        // Scrollspy — highlight the nav link for the section in view
+        (function () {
+            var links = [].slice.call(document.querySelectorAll('.site-nav a.nav-link'));
+            var map = {}, ids = [];
+            links.forEach(function (l) {
+                var id = (l.getAttribute('href') || '').replace('#', '');
+                var sec = id && document.getElementById(id);
+                if (sec) { map[id] = l; ids.push(id); }
+            });
+            if (!ids.length || !('IntersectionObserver' in window)) return;
+            var ratios = {};
+            var spy = new IntersectionObserver(function (entries) {
+                entries.forEach(function (e) { ratios[e.target.id] = e.isIntersecting ? e.intersectionRatio : 0; });
+                var current = null, best = -1;
+                ids.forEach(function (id) { var v = ratios[id] || 0; if (v > best) { best = v; current = id; } });
+                links.forEach(function (l) { l.classList.remove('active'); });
+                if (current && map[current]) map[current].classList.add('active');
+            }, { rootMargin: '-70px 0px -55% 0px', threshold: [0, 0.2, 0.5, 1] });
+            ids.forEach(function (id) { spy.observe(document.getElementById(id)); });
+        })();
+
+        // Dark / light toggle
+        (function () {
+            var btn = document.getElementById('themeToggle');
+            if (!btn) return;
+            var icon = btn.querySelector('i');
+            function sync() {
+                var dark = document.documentElement.getAttribute('data-theme') === 'dark';
+                if (icon) icon.className = dark ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+                btn.setAttribute('title', dark ? 'Switch to light' : 'Switch to dark');
+            }
+            sync();
+            btn.addEventListener('click', function () {
+                var dark = document.documentElement.getAttribute('data-theme') === 'dark';
+                var next = dark ? 'light' : 'dark';
+                document.documentElement.setAttribute('data-theme', next);
+                try { localStorage.setItem('theme', next); } catch (e) {}
+                sync();
+            });
+        })();
+    </script>
 
 </body>
 </html>
