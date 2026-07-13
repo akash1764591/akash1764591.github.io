@@ -7,11 +7,21 @@
     <!-- Set theme before paint (no flash) -->
     <script>
       (function () {
+        function prefersDark() {
+          try {
+            return !!(window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+          } catch (e) { return false; }
+        }
+        var theme;
         try {
-          var t = localStorage.getItem('theme');
-          if (!t) t = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-          document.documentElement.setAttribute('data-theme', t);
-        } catch (e) {}
+          theme = localStorage.getItem('theme');
+        } catch (e) {
+          // localStorage can be unavailable (private mode / blocked storage).
+          // Don't swallow this silently, and still apply a theme below.
+          if (window.console && console.warn) console.warn('Theme init: could not read stored preference, falling back to OS setting.', e);
+        }
+        if (!theme) theme = prefersDark() ? 'dark' : 'light';
+        document.documentElement.setAttribute('data-theme', theme);
       })();
     </script>
 
@@ -607,7 +617,13 @@
                 var dark = document.documentElement.getAttribute('data-theme') === 'dark';
                 var next = dark ? 'light' : 'dark';
                 document.documentElement.setAttribute('data-theme', next);
-                try { localStorage.setItem('theme', next); } catch (e) {}
+                try {
+                    localStorage.setItem('theme', next);
+                } catch (e) {
+                    // Persisting is best-effort; the toggle still works for this
+                    // session even if storage is unavailable. Surface the reason.
+                    if (window.console && console.warn) console.warn('Theme toggle: could not persist preference.', e);
+                }
                 sync();
             });
         })();
