@@ -91,7 +91,7 @@
             display: flex; align-items: center; gap: 28px;
         }
         .site-nav a.nav-link {
-            position: relative; min-height: 50px; padding: 2px 0 0; display: inline-flex; align-items: center;
+            position: relative; min-height: 46px; padding: 2px 0 0; display: inline-flex; align-items: center;
             color: var(--muted); font-size: 11.5px; font-weight: 600; letter-spacing: .045em;
         }
         .site-nav a.nav-link:hover { color: var(--ink); }
@@ -101,9 +101,10 @@
         }
         .site-nav a.nav-link:hover::after, .site-nav a.nav-link.active::after { transform: scaleX(1); }
         .site-nav a.nav-link.active { color: var(--ink); }
-        .page { max-width: 880px; margin: 0 auto; padding: 0 28px 38px; }
+        .page { max-width: 880px; margin: 0 auto; padding: 0 28px 28px; }
         .page-head { padding-bottom: 6px; }
-        .profile { display: flex; gap: 38px; align-items: center; padding: 34px 0 22px; }
+        main.page { padding-bottom: 0; }
+        .profile { display: flex; gap: 34px; align-items: center; padding: 28px 0 18px; }
         .portrait { flex-shrink: 0; width: 188px; margin: 0; }
         .profile .photo { width: 188px; height: 188px; overflow: hidden; border: 1px solid #d4d8dc; }
         .profile .photo img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: center; }
@@ -117,47 +118,47 @@
         .social a { width: 44px; height: 44px; display: inline-flex; align-items: center; justify-content: center; color: var(--muted); }
         .social svg { width: 17px; height: 17px; }
         .social a:hover { color: var(--ink); transform: translateY(-1px); }
-        .section { margin-top: 40px; }
+        .section { margin-top: 30px; }
         .section-title {
-            margin: 0 0 16px;
+            margin: 0 0 12px;
             color: var(--ink); font-size: 12px; font-weight: 700; letter-spacing: .085em; text-transform: uppercase;
         }
-        #bio { margin-top: 30px; }
-        #bio p { max-width: 790px; margin: 0 0 12px; line-height: 1.68; }
+        #bio { margin-top: 24px; }
+        #bio p { max-width: 790px; margin: 0 0 9px; line-height: 1.64; }
         #bio p:last-child { margin-bottom: 0; }
         #bio p a, .news-row > span a, .tl-item p a {
             text-decoration: underline; text-decoration-color: rgba(58,110,165,.32);
             text-decoration-thickness: 1px; text-underline-offset: 2.5px;
         }
         #bio p a:hover, .news-row > span a:hover, .tl-item p a:hover { text-decoration-color: currentColor; }
-        .news-row { display: grid; grid-template-columns: 96px 1fr; gap: 22px; padding: 10px 0; line-height: 1.52; }
+        .news-row { display: grid; grid-template-columns: 96px 1fr; gap: 22px; padding: 7px 0; line-height: 1.48; }
         .news-date { padding-top: 3px; color: var(--muted); font-size: 10.5px; font-weight: 600; letter-spacing: .09em; text-transform: uppercase; }
         .news-scroll.news-collapsible .news-row:nth-child(n+4) { display: none; }
         .news-scroll.news-collapsible.expanded .news-row { display: grid; }
         .news-toggle {
-            min-height: 44px; margin-top: 5px; padding: 4px 0; border: 0; background: transparent;
+            min-height: 36px; margin-top: 2px; padding: 3px 0; border: 0; background: transparent;
             color: var(--accent); font: inherit; font-size: 12px; font-weight: 600; letter-spacing: .04em; cursor: pointer;
         }
         .news-toggle[hidden] { display: none; }
-        .pub-item { padding: 2px 0 17px; margin-bottom: 13px; }
-        .pub-item:last-child { margin-bottom: 0; }
-        .pub-kicker { display: flex; margin-bottom: 6px; color: var(--accent); font-size: 10.5px; font-weight: 600; letter-spacing: .04em; line-height: 1.55; text-transform: uppercase; }
+        .pub-item { padding: 0 0 10px; }
+        .pub-item + .pub-item { padding-top: 13px; border-top: 1px solid var(--line); }
+        .pub-kicker { display: flex; margin-bottom: 4px; color: var(--accent); font-size: 10.5px; font-weight: 600; letter-spacing: .04em; line-height: 1.5; text-transform: uppercase; }
         .pub-kicker span + span::before { content: '·'; margin: 0 6px; color: var(--faint); }
-        .pub-title { max-width: 800px; margin-bottom: 6px; color: var(--ink); font-size: 17.5px; font-weight: 600; letter-spacing: -.25px; line-height: 1.38; }
+        .pub-title { max-width: 800px; margin-bottom: 4px; color: var(--ink); font-size: 17.5px; font-weight: 600; letter-spacing: -.25px; line-height: 1.36; }
         .pub-title a { color: inherit; }
         .pub-title a:hover { color: var(--accent); }
         .pub-authors { margin-bottom: 2px; color: var(--body); font-size: 13.5px; }
         .pub-authors strong { color: #2c3238; font-weight: 600; }
-        .pub-summary { max-width: 730px; margin: 9px 0 0; color: #59616a; font-size: 14px; line-height: 1.62; }
-        .pub-links { display: flex; flex-wrap: wrap; gap: 9px; margin-top: 9px; }
+        .pub-summary { max-width: 730px; margin: 6px 0 0; color: #59616a; font-size: 14px; line-height: 1.56; }
+        .pub-links { display: flex; flex-wrap: wrap; gap: 9px; margin-top: 5px; }
         .pub-links a {
-            min-height: 32px; display: inline-flex; align-items: center; color: var(--accent);
+            min-height: 27px; display: inline-flex; align-items: center; color: var(--accent);
             font-size: 12px; font-weight: 600; text-decoration: underline; text-underline-offset: 3px;
         }
         .timeline { margin: 0; padding: 0; }
-        .tl-item { padding: 0 0 24px; }
+        .tl-item { padding: 0 0 18px; }
         .tl-item:last-child { padding-bottom: 0; }
-        .tl-head { display: flex; align-items: center; gap: 15px; margin-bottom: 5px; }
+        .tl-head { display: flex; align-items: center; gap: 15px; margin-bottom: 3px; }
         .tl-logo {
             width: 52px; height: 52px; flex-shrink: 0; overflow: hidden;
             display: flex; align-items: center; justify-content: center; background: transparent;
@@ -170,14 +171,13 @@
         .tl-meta { color: var(--muted); font-size: 12px; letter-spacing: .02em; }
         .tl-position { display: flex; align-items: baseline; gap: 12px; margin-top: 2px; }
         .tl-position-name { min-width: 132px; color: var(--ink); font-size: 13px; font-weight: 600; }
-        .tl-item p { max-width: 700px; margin: 7px 0 0; color: #59616a; font-size: 14px; line-height: 1.62; }
-        .footer { max-width: 824px; margin: 34px auto 0; padding: 0 20px 28px; color: var(--muted); text-align: center; font-size: 11.5px; }
+        .tl-item p { max-width: 700px; margin: 5px 0 0; color: #59616a; font-size: 14px; line-height: 1.56; }
+        .footer { max-width: 880px; margin: 24px auto 0; padding: 0 28px 22px; color: var(--muted); text-align: left; font-size: 11.5px; }
         .footer a { color: var(--muted); }
-        @media (min-width: 641px) { .news-row > span { white-space: nowrap; } }
         @media (max-width: 640px) {
-            .page { padding: 0 20px 40px; }
+            .page { padding: 0 20px 30px; }
             .page.page-head { padding-bottom: 6px; }
-            .profile { flex-direction: column; gap: 16px; padding: 24px 0 16px; text-align: center; }
+            .profile { flex-direction: column; gap: 14px; padding: 20px 0 13px; text-align: center; }
             .portrait { width: 210px; }
             .profile .photo { width: 172px; height: 172px; margin: 0 auto; }
             .profile-text { width: 100%; }
@@ -186,13 +186,14 @@
             .site-nav .inner { gap: 22px; overflow-x: auto; padding: 0 20px; scrollbar-width: none; }
             .site-nav .inner::-webkit-scrollbar { display: none; }
             .site-nav a.nav-link { flex: 0 0 auto; font-size: 12px; letter-spacing: .015em; }
-            .section { margin-top: 34px; }
-            #bio { margin-top: 24px; }
-            .section-title { margin-bottom: 14px; }
-            .news-row { grid-template-columns: 72px 1fr; gap: 12px; padding: 11px 0; }
+            .section { margin-top: 28px; }
+            #bio { margin-top: 20px; }
+            .section-title { margin-bottom: 11px; }
+            .news-row { grid-template-columns: 72px 1fr; gap: 12px; padding: 8px 0; }
             .news-row > span, .pub-title, .pub-summary { min-width: 0; overflow-wrap: anywhere; }
             .photo-caption span { white-space: normal; }
             .tl-head > div:last-child { min-width: 0; }
+            .footer { padding-right: 20px; padding-left: 20px; }
         }
         @media (max-width: 420px) {
             .tl-position { display: block; margin-top: 5px; }
@@ -253,7 +254,8 @@
     <nav class="site-nav" aria-label="Section navigation">
         <div class="inner">
             <a class="nav-link" href="#bio">About</a>
-            <a class="nav-link" href="#news">Recently</a>
+            <a class="nav-link" href="#writing">Writing</a>
+            <a class="nav-link" href="#updates">Updates</a>
             <a class="nav-link" href="#publications">Research</a>
             <a class="nav-link" href="#experience">Experience</a>
         </div>
@@ -271,13 +273,22 @@
                 My bachelor&rsquo;s thesis with <a href="https://pratikgajane.github.io/" target="_blank" rel="noopener noreferrer">Pratik Gajane</a> asked whether one multi-dueling bandit algorithm could handle both stochastic and adversarial preferences. Earlier, I studied scheduling with <a href="https://www.irit.fr/~Urtzi.Ayesta/" target="_blank" rel="noopener noreferrer">Urtzi Ayesta</a> at IRIT Toulouse and Markovian bandits with <a href="https://sites.google.com/view/tejaspbodas/" target="_blank" rel="noopener noreferrer">Tejas Bodas</a> at IIIT Hyderabad. The <a href="https://www.inde.campusfrance.org/charpak-lab-scholarship" target="_blank" rel="noopener noreferrer">Charpak Scholarship</a> supported my time in Toulouse.
             </p>
             <p>
-                If any of that overlaps with something you&rsquo;re thinking about, feel free to <a href="mailto:akash20041764591@gmail.com">email me</a>.
+                If you&rsquo;re working on related problems, feel free to <a href="mailto:akash20041764591@gmail.com">mail me</a>.
             </p>
         </section>
 
-        <!-- News -->
-        <section class="section" id="news" aria-labelledby="news-title">
-            <h2 class="section-title" id="news-title">Recently</h2>
+        <!-- Writing -->
+        <section class="section" id="writing" aria-labelledby="writing-title">
+            <h2 class="section-title" id="writing-title">Writing</h2>
+            <div class="news-row">
+                <time class="news-date" datetime="2026-08-10">Aug 2026</time>
+                <span><a href="blog/best-of-both-worlds-multi-dueling-bandits/"><em>Best-of-Both-Worlds Multi-Dueling Bandits</em></a></span>
+            </div>
+        </section>
+
+        <!-- Updates -->
+        <section class="section" id="updates" aria-labelledby="updates-title">
+            <h2 class="section-title" id="updates-title">Updates</h2>
             <div class="news-scroll" id="newsList">
                 <div class="news-row">
                     <time class="news-date" datetime="2026-06">Jun 2026</time>
@@ -311,42 +322,40 @@
             <button class="news-toggle" id="newsToggle" type="button" aria-controls="newsList" aria-expanded="false" hidden>Show older updates</button>
         </section>
 
-        <!-- Publications -->
+        <!-- Research -->
         <section class="section" id="publications" aria-labelledby="publications-title">
             <h2 class="section-title" id="publications-title">Research</h2>
-
             <div class="pub-list">
+                <article class="pub-item">
+                    <div class="pub-kicker"><span>Preprint</span></div>
+                    <div class="pub-content">
+                        <div class="pub-title">
+                            <a href="https://arxiv.org/abs/2606.01159" target="_blank" rel="noopener noreferrer">Fairness in Two-Player Zero-Sum Games with Bandit Feedback</a>
+                        </div>
+                        <div class="pub-authors"><strong>S Akash</strong>, Pratik Gajane</div>
+                        <p class="pub-summary">What does it cost to give every action a fair chance when players observe only bandit feedback? We recast the constrained game and bound both regret and the price of fairness.</p>
+                        <div class="pub-links">
+                            <a href="https://arxiv.org/abs/2606.01159" target="_blank" rel="noopener noreferrer">Paper</a>
+                        </div>
+                    </div>
+                </article>
 
-            <article class="pub-item">
-                <div class="pub-kicker"><span>Preprint</span></div>
-                <div class="pub-content">
-                    <div class="pub-title">
-                        <a href="https://arxiv.org/abs/2606.01159" target="_blank" rel="noopener noreferrer">Fairness in Two-Player Zero-Sum Games with Bandit Feedback</a>
+                <article class="pub-item">
+                    <div class="pub-kicker"><span>RLC &rsquo;26</span><span>ProbML @ ICML &rsquo;26</span></div>
+                    <div class="pub-content">
+                        <div class="pub-title">
+                            <a href="https://arxiv.org/abs/2603.18972" target="_blank" rel="noopener noreferrer">Best-of-Both-Worlds Multi-Dueling Bandits: Unified Algorithms for Stochastic and Adversarial Preferences under Condorcet and Borda Objectives</a>
+                        </div>
+                        <div class="pub-authors"><strong>S Akash</strong>, Pratik Gajane, Jawar Singh</div>
+                        <p class="pub-summary">Can one algorithm learn from predictable preferences without becoming fragile to adversarial ones? We answer yes for multi-dueling bandits under both Condorcet and Borda objectives.</p>
+                        <div class="pub-links">
+                            <a href="blog/best-of-both-worlds-multi-dueling-bandits/">Blog</a>
+                            <a href="https://arxiv.org/abs/2603.18972" target="_blank" rel="noopener noreferrer">Paper</a>
+                            <a href="DATA/Multi_Dueling_Bandits_extended_abstract.pdf" target="_blank" rel="noopener noreferrer">Extended abstract</a>
+                        </div>
                     </div>
-                    <div class="pub-authors"><strong>S Akash</strong>, Pratik Gajane</div>
-                    <p class="pub-summary">What does it cost to give every action a fair chance when players observe only bandit feedback? We recast the constrained game and bound both regret and the price of fairness.</p>
-                    <div class="pub-links">
-                        <a href="https://arxiv.org/abs/2606.01159" target="_blank" rel="noopener noreferrer">Paper</a>
-                    </div>
-                </div>
-            </article>
-
-            <article class="pub-item">
-                <div class="pub-kicker"><span>RLC &rsquo;26</span><span>ProbML @ ICML &rsquo;26</span></div>
-                <div class="pub-content">
-                    <div class="pub-title">
-                        <a href="https://arxiv.org/abs/2603.18972" target="_blank" rel="noopener noreferrer">Best-of-Both-Worlds Multi-Dueling Bandits: Unified Algorithms for Stochastic and Adversarial Preferences under Condorcet and Borda Objectives</a>
-                    </div>
-                    <div class="pub-authors"><strong>S Akash</strong>, Pratik Gajane, Jawar Singh</div>
-                    <p class="pub-summary">Can one algorithm learn from predictable preferences without becoming fragile to adversarial ones? We answer yes for multi-dueling bandits under both Condorcet and Borda objectives.</p>
-                    <div class="pub-links">
-                        <a href="https://arxiv.org/abs/2603.18972" target="_blank" rel="noopener noreferrer">Paper</a>
-                        <a href="DATA/Multi_Dueling_Bandits_extended_abstract.pdf" target="_blank" rel="noopener noreferrer">Extended abstract</a>
-                    </div>
-                </div>
-            </article>
-
-            </div><!-- .pub-list -->
+                </article>
+            </div>
         </section>
 
         <!-- Experience -->
@@ -403,7 +412,7 @@
     </footer>
 
     <script>
-        // Keep recent news concise without hiding the archive
+        // Keep recent updates concise without hiding the archive
         (function () {
             var list = document.getElementById('newsList');
             var btn = document.getElementById('newsToggle');
