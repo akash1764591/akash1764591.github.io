@@ -5,168 +5,57 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Best-of-Both-Worlds Multi-Dueling Bandits · S Akash</title>
     <meta name="author" content="S Akash">
-    <meta name="description" content="An intuitive account of my bachelor’s thesis on learning from multi-way, winner-only preference feedback.">
-    <meta name="theme-color" content="#faf9f7">
+    <meta name="description" content="A short note on the two reductions behind our best-of-both-worlds result for multi-dueling bandits.">
+    <meta name="theme-color" content="#080808">
     <link rel="canonical" href="https://akash1764591.github.io/blog/best-of-both-worlds-multi-dueling-bandits/">
 
     <meta property="og:title" content="Best-of-Both-Worlds Multi-Dueling Bandits">
-    <meta property="og:description" content="An intuitive account of my bachelor’s thesis on learning from multi-way, winner-only preference feedback.">
+    <meta property="og:description" content="A short note on the two reductions behind our best-of-both-worlds result for multi-dueling bandits.">
+    <meta property="og:image" content="https://akash1764591.github.io/blog/best-of-both-worlds-multi-dueling-bandits/assets/rlc-2026-poster.jpg">
+    <meta property="og:image:width" content="1800">
+    <meta property="og:image:height" content="1273">
+    <meta property="og:image:alt" content="RLC 2026 poster for Best-of-Both-Worlds Multi-Dueling Bandits">
     <meta property="og:type" content="article">
     <meta property="og:url" content="https://akash1764591.github.io/blog/best-of-both-worlds-multi-dueling-bandits/">
     <meta property="article:published_time" content="2026-08-10">
-    <meta name="twitter:card" content="summary">
+    <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Best-of-Both-Worlds Multi-Dueling Bandits">
-    <meta name="twitter:description" content="An intuitive account of my bachelor’s thesis on learning from multi-way, winner-only preference feedback.">
+    <meta name="twitter:description" content="A short note on the two reductions behind our best-of-both-worlds result for multi-dueling bandits.">
+    <meta name="twitter:image" content="https://akash1764591.github.io/blog/best-of-both-worlds-multi-dueling-bandits/assets/rlc-2026-poster.jpg">
+    <meta name="twitter:image:alt" content="RLC 2026 poster for Best-of-Both-Worlds Multi-Dueling Bandits">
 
-    <link rel="icon" type="image/svg+xml" href="../../images/favicon.svg?v=2">
+    <link rel="icon" type="image/svg+xml" href="../../images/favicon.svg?v=4">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&amp;family=Newsreader:opsz,wght@6..72,500&amp;display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500&amp;display=swap" rel="stylesheet">
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.18.3/dist/katex.min.css" integrity="sha384-RoLRvUYVd65C0csQyzIQe9vxSGIc1JNXuJCUqUtuBQ1cMoH/+Fzt8LptMNlxg+HJ" crossorigin="anonymous">
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.18.3/dist/katex.min.js" integrity="sha384-Ao5geg2cviSdXKBbEHUKrtw7GPZLJSuVtw/I5Yzsa6vgc3PaxqS5OqSbdufSsnoo" crossorigin="anonymous"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.18.3/dist/contrib/auto-render.min.js" integrity="sha384-bjyGPfbij8/NDKJhSGZNP/khQVgtHUE5exjm4Ydllo42FwIgYsdLO2lXGmRBf5Mz" crossorigin="anonymous" onload="renderMathInElement(document.body);"></script>
 
-    <style>
-        :root {
-            --ink: #20201f;
-            --body: #393835;
-            --muted: #77736d;
-            --line: #d9d5cf;
-            --link: #285c8a;
-            --soft-blue: #dce8f3;
-            --bg: #faf9f7;
-        }
-        * { box-sizing: border-box; }
-        html { scroll-behavior: smooth; }
-        body {
-            margin: 0;
-            color: var(--body);
-            background: var(--bg);
-            font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            font-size: 15.5px;
-            line-height: 1.64;
-            text-rendering: optimizeLegibility;
-        }
-        a { color: var(--link); text-decoration-thickness: 1px; text-underline-offset: 3px; }
-        a:hover { color: var(--ink); }
-        a:focus-visible { outline: 2px solid var(--link); outline-offset: 3px; }
-        ::selection { background: var(--soft-blue); }
-        .skip-link {
-            position: fixed; top: 8px; left: 8px; z-index: 10; padding: 7px 11px;
-            color: #fff; background: var(--ink); transform: translateY(-150%); font-size: 13px;
-        }
-        .skip-link:focus { transform: translateY(0); }
-        .site-header {
-            max-width: 800px; margin: 0 auto; padding: 26px 24px 0;
-            display: flex; justify-content: space-between; gap: 24px; font-size: 12px;
-        }
-        .site-header a { color: var(--muted); text-decoration: none; }
-        .site-header a:hover { color: var(--ink); }
-        main { max-width: 800px; margin: 0 auto; padding: 66px 24px 68px; }
-        .article-head { margin-bottom: 42px; }
-        h1 {
-            margin: 0; color: var(--ink);
-            font-family: 'Newsreader', Georgia, serif; font-size: clamp(31px, 5vw, 36px);
-            font-weight: 500; letter-spacing: -.55px; line-height: 1.1;
-        }
-        .meta { margin-top: 20px; color: var(--muted); font-size: 12.5px; }
-        p { margin: 0 0 18px; }
-        .intro { color: var(--ink); }
-        h2 {
-            margin: 44px 0 14px; color: var(--ink); font-size: 21px;
-            font-weight: 600; letter-spacing: -.2px; line-height: 1.32;
-        }
-        strong { color: var(--ink); font-weight: 600; }
-        figure { margin: 31px 0 35px; }
-        .diagram {
-            display: block; width: 100%; height: auto; color: var(--ink);
-            font-family: 'IBM Plex Sans', sans-serif;
-        }
-        .diagram .muted { fill: var(--muted); }
-        .diagram .ink { fill: var(--ink); }
-        .diagram .node { fill: var(--bg); stroke: var(--ink); stroke-width: 1.2; }
-        .diagram .accent-node { fill: var(--soft-blue); stroke: var(--link); stroke-width: 1.4; }
-        .diagram .line { fill: none; stroke: var(--ink); stroke-width: 1.2; }
-        .diagram .accent-line { fill: none; stroke: var(--link); stroke-width: 1.35; }
-        .diagram .faint-line { fill: none; stroke: var(--line); stroke-width: 1.2; }
-        .diagram .dashed { stroke-dasharray: 4 5; }
-        figcaption { margin-top: 9px; color: var(--muted); font-size: 11.5px; line-height: 1.5; }
-        .math-display {
-            margin: 21px 0; overflow-x: auto; overflow-y: hidden;
-            color: var(--ink); text-align: center;
-        }
-        .math-display .katex-display { margin: 0; }
-        .math-display.key-equation {
-            margin: 29px 0; padding: 20px 0;
-            border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
-        }
-        .key-equation .katex { font-size: 1.1em; }
-        .katex { font-size: 1em; }
-        .algorithm {
-            margin: 29px 0 33px; padding: 15px 0 18px;
-            border-top: 1px solid var(--ink); border-bottom: 1px solid var(--ink);
-        }
-        .algorithm-head {
-            display: flex; gap: 13px; align-items: baseline; padding-bottom: 11px;
-            border-bottom: 1px solid var(--line); color: var(--ink); font-size: 12.5px;
-        }
-        .algorithm-number { color: var(--muted); }
-        .algorithm-name { font-weight: 600; font-variant: small-caps; letter-spacing: .025em; }
-        .algorithm-body { margin: 16px 0 0; text-align: left; }
-        .algorithm-body .katex-display > .katex {
-            display: inline-block; min-width: 100%; text-align: left; font-size: .91em;
-        }
-        .consequences { margin: 22px 0 23px; padding-left: 22px; }
-        .consequences li { margin-bottom: 8px; padding-left: 2px; }
-        .endnote {
-            margin-top: 52px; padding-top: 22px; border-top: 1px solid var(--line);
-            color: var(--muted); font-size: 12.5px; line-height: 1.6;
-        }
-        .endnote p { margin-bottom: 9px; }
-        footer {
-            max-width: 800px; margin: 0 auto; padding: 0 24px 36px;
-            color: var(--muted); font-size: 11px;
-        }
-        @media (max-width: 600px) {
-            body { font-size: 15px; }
-            .site-header { padding-top: 22px; }
-            main { padding-top: 55px; }
-            .article-head { margin-bottom: 38px; }
-            h1 { letter-spacing: -.35px; }
-            h2 { margin-top: 39px; font-size: 20px; }
-            figure { overflow-x: auto; }
-            .diagram { min-width: 530px; }
-            .algorithm-body .katex-display > .katex { font-size: .84em; }
-            .math-display { text-align: left; }
-        }
-        @media (min-width: 800px) {
-            h1 { white-space: nowrap; }
-        }
-        @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
-    </style>
+    <link rel="stylesheet" href="../../styles.css">
 </head>
 
 <body>
     <a class="skip-link" href="#article">Skip to article</a>
 
-    <nav class="site-header" aria-label="Blog navigation">
-        <a href="../../">S Akash</a>
-        <a href="https://arxiv.org/abs/2603.18972" target="_blank" rel="noopener noreferrer">Paper ↗</a>
+    <nav class="article-nav" aria-label="Blog navigation">
+        <a href="../../index.html">← home</a>
+        <a href="https://rlj.cs.umass.edu/2026/papers/Paper125.pdf" target="_blank" rel="noopener noreferrer">Paper ↗</a>
     </nav>
 
-    <main id="article">
+    <main class="article-main" id="article">
         <header class="article-head">
-            <h1>Best-of-Both-Worlds Multi-Dueling Bandits</h1>
-            <div class="meta">S Akash · August 10, 2026</div>
+            <h1 class="article-title">Best-of-Both-Worlds<br>Multi-Dueling Bandits</h1>
+            <div class="article-meta">S Akash · August 10, 2026 · 5 min read</div>
         </header>
 
-        <article>
-            <p class="intro">During my bachelor’s thesis, I worked with Pratik Gajane and Jawar Singh on multi-dueling bandits. The question was whether a learner that sees only the winner of each comparison can exploit stable preferences without becoming fragile when those preferences change adversarially.</p>
+        <article class="article-body">
+            <p class="intro">this is a short note on our <a href="https://rlj.cs.umass.edu/2026/papers/Paper125.pdf" target="_blank" rel="noopener noreferrer">paper</a>. i wanted to write down the two reductions that made the result click for me.</p>
 
-            <h2>Winner-only feedback</h2>
+            <h2>the problem</h2>
 
-            <p>Suppose I want to compare several search rankers. If I show a user two rankings and record which one they prefer, that is a <a href="https://www.cs.cornell.edu/people/tj/publications/yue_joachims_09a.pdf" target="_blank" rel="noopener noreferrer">dueling bandit</a>. A multi-dueling bandit lets me show \(m \ge 2\) rankers at once, but I still get only one winner back.</p>
+            <p>we study multi-dueling bandits: in each round, the learner chooses several arms and sees only the winner. one example i kept in mind was comparing search rankers. several rankers produce results, one is preferred, and everything about the remaining comparisons stays hidden.</p>
 
             <figure>
                 <svg class="diagram" viewBox="0 0 650 176" role="img" aria-labelledby="winner-feedback-title winner-feedback-desc">
@@ -193,130 +82,18 @@
                     <path class="faint-line dashed" d="M62 122 H293"></path>
                     <text class="muted" x="177" y="146" text-anchor="middle" font-size="10.5">everything else is hidden</text>
                 </svg>
-                <figcaption>With four arms, six latent pairwise relations are compressed into one categorical observation.</figcaption>
+                <figcaption>four candidates go in; one winner comes back.</figcaption>
             </figure>
 
-            <p>Here is the model we use. There are \(K\) arms. At round \(t\), the learner chooses a multiset \(A_t\) of size \(m\), then observes the winning position \(I_t\), whose arm is \(A_t(I_t)\). Pairwise preferences live in a matrix \(P_t\), where \(P_t(i,j)\) is the probability that \(i\) is preferred to \(j\):</p>
+            <p>the basic tension is between learning quickly and staying robust. with stable preferences, it makes sense to settle on a good option early. with adversarially changing preferences, the same confidence can become expensive. the learner does not know in advance which regime it is in.</p>
 
-            <div class="math-display">
-                \[
-                    P_t(i,j) + P_t(j,i) = 1,
-                    \qquad
-                    P_t(i,i) = \tfrac12.
-                \]
-            </div>
+            <p>our question was whether one algorithm could use stable preferences without becoming fragile when that stability disappears. this is the <a href="https://www.jmlr.org/papers/v22/19-753.html" target="_blank" rel="noopener noreferrer">best-of-both-worlds</a> objective.</p>
 
-            <p>We still need a rule that turns this pairwise matrix into one winner among \(m\) arms. Under the pairwise-subset choice model, position \(i\) wins with its average pairwise preference against the other positions:</p>
+            <h2>from a group comparison back to a duel</h2>
 
-            <div class="math-display">
-                \[
-                    W(i\mid A,P)
-                    =\sum_{j\ne i}\frac{2P(A(i),A(j))}{m(m-1)}.
-                \]
-            </div>
+            <p>the useful observation for Condorcet was a small reduction. if an ordinary dueling algorithm asks to compare \(x\) and \(y\), while the interface expects four items, we submit \(\{x,x,y,y\}\). we report “\(x\) won” whenever either copy of \(x\) is selected.</p>
 
-            <h2>What can change over time?</h2>
-
-            <p>In a stochastic environment, \(P_t=P\): evidence collected today remains useful tomorrow. In an adversarial environment, \(P_t\) may change every round. Commit early and later changes can trap you; keep exploring forever and you waste an easy, stable problem.</p>
-
-            <p>The learner is not told which world it is in. This is the <a href="https://www.jmlr.org/papers/v22/19-753.html" target="_blank" rel="noopener noreferrer">best-of-both-worlds</a> goal: benefit from stability without assuming it.</p>
-
-            <h2>What does “best” mean?</h2>
-
-            <p>Pairwise preferences need not fit a single ranking: \(A\) can beat \(B\), \(B\) can beat \(C\), and \(C\) can beat \(A\). So “best” needs a definition.</p>
-
-            <p>We use two. A Condorcet winner \(a^\star\) beats every opponent directly,</p>
-
-            <div class="math-display">
-                \[
-                    P_t(a^\star,i) \ge \tfrac12
-                    \qquad \text{for every arm } i \text{ and round } t,
-                \]
-            </div>
-
-            <p>while a Borda winner maximizes the average preference against all opponents,</p>
-
-            <div class="math-display">
-                \[
-                    b_t(i)=\frac{1}{K-1}\sum_{j\ne i}P_t(i,j).
-                \]
-            </div>
-
-            <p>The two winners can disagree. Consider three arms with</p>
-
-            <div class="math-display">
-                \[
-                    P(A,B)=0.51,\qquad P(A,C)=0.51,\qquad P(B,C)=0.99.
-                \]
-            </div>
-
-            <p>Arm \(A\) is the Condorcet winner because it beats both opponents. But \(b(A)=0.51\) while \(b(B)=0.74\), so \(B\) is the Borda winner. Preserving head-to-head preferences is enough for Condorcet; Borda requires information from the whole matrix.</p>
-
-            <h2>MetaDueling: reuse a dueling learner</h2>
-
-            <p>For Condorcet, we take an ordinary dueling learner \(\mathcal D\) and put it behind the multi-dueling interface. The wrapper is <strong>MetaDueling</strong>:</p>
-
-            <div class="algorithm" role="group" aria-labelledby="metaduelling-algorithm">
-                <div class="algorithm-head">
-                    <span class="algorithm-number">Algorithm 1</span>
-                    <span class="algorithm-name" id="metaduelling-algorithm">MetaDueling</span>
-                </div>
-                <div class="math-display algorithm-body">
-                    \[
-                    \begin{aligned}
-                    &\textbf{Require: }\text{dueling learner }\mathcal D,\ \text{subset size }m \\[2pt]
-                    &\textbf{for }t=1,\ldots,T\textbf{ do}\\
-                    &\qquad (x_t,y_t)\leftarrow \mathcal D\\
-                    &\qquad n_x+n_y=m,\quad |n_x-n_y|\le 1\\
-                    &\qquad \text{if }m\text{ is odd, randomize which arm receives the extra copy}\\
-                    &\qquad A_t\leftarrow
-                        \{\underbrace{x_t,\ldots,x_t}_{n_x},
-                          \underbrace{y_t,\ldots,y_t}_{n_y}\}\\
-                    &\qquad \text{play }A_t\text{ and observe winning position }I_t\\
-                    &\qquad o_t\leftarrow\mathbb{1}\{A_t(I_t)=x_t\}\\
-                    &\qquad \text{update }\mathcal D\text{ with }o_t\\
-                    &\textbf{end for}
-                    \end{aligned}
-                    \]
-                </div>
-            </div>
-
-            <p>At first this looks wasteful: a four-way comparison becomes \(A_t=\{x_t,x_t,y_t,y_t\}\). Some of the implicit comparisons are now \(x_t\) against itself or \(y_t\) against itself. But the \(m=4\) calculation shows exactly what the learner receives. If \(p=P_t(x_t,y_t)\), then</p>
-
-            <div class="math-display">
-                \[
-                    \Pr(x_t\text{ wins})
-                    =\frac16+\frac23p,
-                    \qquad
-                    \Pr(x_t\text{ wins})-\frac12
-                    =\frac23\left(p-\frac12\right).
-                \]
-            </div>
-
-            <p>So a \(70\)-\(30\) duel looks roughly \(63\)-\(37\) to \(\mathcal D\).</p>
-
-            <h2>The equation behind the reduction</h2>
-
-            <p>For any \(m\), the same pattern gives the effective preference seen by the dueling learner:</p>
-
-            <div class="math-display">
-                \[
-                    \mathbb E[o_t\mid x_t,y_t]
-                    = \alpha_m+\beta_m p
-                    =:\widetilde P_t(x_t,y_t),
-                \]
-                \[
-                    \beta_m=
-                    \begin{cases}
-                        \dfrac{m}{2(m-1)}, & m \text{ even},\\[5pt]
-                        \dfrac{m+1}{2m}, & m \text{ odd},
-                    \end{cases}
-                    \qquad
-                    \alpha_m=\frac{1-\beta_m}{2}.
-                \]
-            </div>
-
-            <p>Subtracting \(1/2\) from both sides makes the point visible:</p>
+            <p>this duplication weakens the preference signal, but does not reverse it. a true \(70\)-\(30\) preference becomes roughly \(63\)-\(37\). with a group of \(m\) items, every margin is multiplied by the same positive factor:</p>
 
             <div class="math-display key-equation">
                 \[
@@ -325,23 +102,17 @@
                 \]
             </div>
 
-            <p>The dueling learner sees the same contest, with every margin shrunk by \(\beta_m\):</p>
+            <p>the factor \(\beta_m\) lies between \(1/2\) and \(1\), so every head-to-head winner is preserved. that is enough to place a standard dueling algorithm inside the multi-way interface. we call the resulting wrapper <strong>MetaDueling</strong>.</p>
 
-            <ul class="consequences">
-                <li>The winner of every pair stays the same, so the Condorcet winner stays the same.</li>
-                <li>All Condorcet gaps shrink by the same factor.</li>
-                <li>Since \(\beta_m\ge \tfrac12\), the signal is never less than half as strong, no matter how large \(m\) is.</li>
-            </ul>
+            <h2>condorcet and borda behave differently</h2>
 
-            <p>So \(\mathcal D\) can behave as though it were facing an ordinary duel. In our paper we use <a href="https://proceedings.mlr.press/v162/saha22a.html" target="_blank" rel="noopener noreferrer">Versatile-DB</a>; its ability to adapt between stochastic and adversarial duels passes through the reduction. MetaDueling only handles the translation.</p>
+            <p>the Condorcet and Borda objectives use different information. a <strong>Condorcet winner</strong> beats every other option directly, while a <strong>Borda winner</strong> has the best average performance against all opponents.</p>
 
-            <h2>SA-MiDEX: learn, monitor, switch</h2>
+            <p>MetaDueling is enough for the Condorcet objective because only the direction of each pairwise comparison matters. Borda is harder: its score depends on information spread across the entire preference matrix, so preserving the winner of one duel is not enough.</p>
 
-            <p>The same shortcut is not enough for Borda. For the adversarial case, we start from Pratik Gajane’s <a href="https://arxiv.org/pdf/2406.12475" target="_blank" rel="noopener noreferrer">MiDEX (Multi Dueling EXP3)</a>. MiDEX keeps an EXP3 distribution \(q_t\) over the arms. Each round, it draws two arms from \(q_t\), passes them through the duplication-and-debiasing step above, and uses the result to update \(q_t\).</p>
+            <h2>learn quickly, but keep checking</h2>
 
-            <p>There is one catch: \(q_t\) favors arms that currently look good, while Borda averages against a uniform opponent. Importance weighting corrects that mismatch. The estimator is nonzero only for the sampled arms, but averaged over the learner’s random draws, it ranks the arms exactly as Borda does.</p>
-
-            <p>MiDEX handles changing preferences by never stopping exploration. <strong>SA-MiDEX</strong> keeps this adversarial mode as a fallback and adds a stochastic front end based on the strategy of <a href="https://proceedings.mlr.press/v49/auer16.html" target="_blank" rel="noopener noreferrer">Auer and Chiang</a>.</p>
+            <p>Borda needed a second idea. in <strong>SA-MiDEX</strong>, we first sample broadly enough to build a baseline and then eliminate arms that are clearly worse. a small monitoring process keeps checking whether that baseline still agrees with the observations.</p>
 
             <figure>
                 <svg class="diagram" viewBox="0 0 650 224" role="img" aria-labelledby="samidex-title samidex-desc">
@@ -352,7 +123,7 @@
                             <path d="M0,0 L7,3.5 L0,7 Z" fill="currentColor"></path>
                         </marker>
                         <marker id="sa-blue-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
-                            <path d="M0,0 L7,3.5 L0,7 Z" fill="#285c8a"></path>
+                            <path d="M0,0 L7,3.5 L0,7 Z" fill="currentColor"></path>
                         </marker>
                     </defs>
 
@@ -377,51 +148,49 @@
                     <text class="muted" x="429" y="129" text-anchor="middle" font-size="10.5">no detectable drift</text>
 
                     <path class="accent-line" d="M543 97 V172 H423" marker-end="url(#sa-blue-arrow)"></path>
-                    <text x="554" y="142" fill="#285c8a" font-size="10.5">drift detected</text>
+                    <text class="ink" x="554" y="142" font-size="10.5">drift detected</text>
 
                     <text class="muted" x="20" y="183" font-size="11">adversarial mode</text>
                     <rect class="accent-node" x="236" y="154" width="180" height="50" rx="2"></rect>
                     <text class="ink" x="326" y="176" text-anchor="middle" font-size="12.5">MiDEX adversarial mode</text>
                     <text class="muted" x="326" y="192" text-anchor="middle" font-size="10.5">EXP3 + importance weighting</text>
                 </svg>
-                <figcaption>Successive elimination and monitoring run in parallel during the stochastic phase.</figcaption>
+                <figcaption>exploit stability while continuously testing whether it still exists.</figcaption>
             </figure>
 
-            <p>SA-MiDEX begins by comparing every ordered pair to build a baseline matrix. In the stochastic phase, confidence intervals eliminate arms whose Borda scores are clearly worse, while occasional random pairs check whether the baseline still fits.</p>
+            <p>as long as the observations agree with the baseline, SA-MiDEX gets the efficiency of the stochastic setting. if the monitor finds sustained drift, it switches to <a href="https://arxiv.org/pdf/2406.12475" target="_blank" rel="noopener noreferrer">MiDEX</a>, which keeps exploring and can handle adversarially changing preferences.</p>
 
-            <p>MetaDueling returns the effective preference \(\widetilde P_t\), not the underlying \(P_t\). SA-MiDEX undoes that affine map:</p>
+            <p>random noise is the annoying part: it can look like drift for a while, so the switching threshold has to be conservative. a persistent change eventually grows beyond ordinary fluctuation, and that is when the algorithm gives up the stochastic assumption.</p>
 
-            <div class="math-display">
-                \[
-                    g_t=\frac{o_t-\alpha_m}{\beta_m},
-                    \qquad
-                    \mathbb E[g_t\mid x_t,y_t]=P_t(x_t,y_t).
-                \]
-            </div>
+            <h2>how i think about the result</h2>
 
-            <p>Undoing the compression makes the sample noisier. During the stochastic phase, SA-MiDEX pairs a candidate \(x_t\) with an opponent \(Y_t\) chosen uniformly from every other arm. Averaging over that opponent gives exactly the Borda score:</p>
+            <p>i now think about the result in two pieces: duplication handles the mismatch between winner-only group feedback and ordinary duels, while monitoring handles the mismatch between the stochastic and adversarial regimes.</p>
 
-            <div class="math-display">
-                \[
-                    \mathbb E[g_t\mid x_t=x]
-                    =\frac{1}{K-1}\sum_{y\ne x}P_t(x,y)
-                    =b_t(x).
-                \]
-            </div>
+            <p>the poster below puts the setup, both algorithms, and the guarantees in one place. thanks to <a href="https://pratikgajane.github.io/" target="_blank" rel="noopener noreferrer">pratik</a> for somehow fitting the whole result onto one page.</p>
 
-            <p>At the same time, the monitor accumulates the difference between this feedback and the baseline prediction. Random noise grows on a square-root scale; a sustained shift grows faster. Once the discrepancy crosses the threshold, the stochastic phase ends and MiDEX takes over permanently.</p>
+            <figure class="poster-figure">
+                <button class="poster-link" type="button" aria-haspopup="dialog" aria-controls="poster-dialog" aria-label="Enlarge the RLC 2026 poster">
+                    <img src="assets/rlc-2026-poster.jpg" width="1800" height="1273" loading="lazy" decoding="async" alt="RLC 2026 poster for Best-of-Both-Worlds Multi-Dueling Bandits, summarizing MetaDueling and SA-MiDEX">
+                </button>
+                <figcaption>our poster for rlc 2026</figcaption>
+            </figure>
 
-            <h2>What remains open</h2>
+            <dialog class="poster-dialog" id="poster-dialog" aria-label="RLC 2026 poster">
+                <button class="poster-close" type="button" aria-label="Close enlarged poster">close</button>
+                <img src="assets/rlc-2026-poster.jpg" width="1800" height="1273" alt="RLC 2026 poster for Best-of-Both-Worlds Multi-Dueling Bandits, summarizing MetaDueling and SA-MiDEX">
+            </dialog>
 
-            <p>The questions I find most interesting are whether genuinely multi-way comparisons can be used without losing the black-box reduction, whether structure in the preference matrix can avoid all-pairs exploration, and whether the monitoring test can be made reversible. Both algorithms also rely on the pairwise-subset choice model; other choice models may need different ideas.</p>
-
-            <div class="endnote">
-                <p><a href="https://arxiv.org/abs/2603.18972" target="_blank" rel="noopener noreferrer">Best-of-Both-Worlds Multi-Dueling Bandits: Unified Algorithms for Stochastic and Adversarial Preferences under Condorcet and Borda Objectives</a></p>
-                <p>S Akash, Pratik Gajane, and Jawar Singh</p>
-            </div>
         </article>
     </main>
 
-    <footer>© 2026 S Akash</footer>
+    <script>
+        const posterDialog = document.getElementById('poster-dialog');
+        document.querySelector('.poster-link').addEventListener('click', () => posterDialog.showModal());
+        posterDialog.querySelector('.poster-close').addEventListener('click', () => posterDialog.close());
+        posterDialog.addEventListener('click', (event) => {
+            if (event.target === posterDialog) posterDialog.close();
+        });
+    </script>
+
 </body>
 </html>

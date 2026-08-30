@@ -1,18 +1,16 @@
-<!DOCTYPE HTML>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>S Akash</title>
-
-    <meta name="author" content="S Akash">
-    <meta name="description" content="S Akash works on coding agents, code retrieval, multi-model systems, bandits, and sequential decision-making.">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="theme-color" content="#ffffff">
+    <title>S Akash</title>
+    <meta name="author" content="S Akash">
+    <meta name="description" content="S Akash works across research and engineering at LatentForce, with interests in learning algorithms, bandits, and sequential decision-making.">
+    <meta name="theme-color" content="#080808">
     <link rel="canonical" href="https://akash1764591.github.io/">
 
-    <!-- Open Graph -->
     <meta property="og:title" content="S Akash">
-    <meta property="og:description" content="Working on coding agents, bandits, and sequential decision-making.">
+    <meta property="og:description" content="Research and engineering at LatentForce, with interests in learning algorithms, bandits, and sequential decision-making.">
     <meta property="og:image" content="https://akash1764591.github.io/images/akash_profile.jpg">
     <meta property="og:image:width" content="640">
     <meta property="og:image:height" content="640">
@@ -22,16 +20,15 @@
     <meta property="og:site_name" content="S Akash">
     <meta name="twitter:card" content="summary">
     <meta name="twitter:title" content="S Akash">
-    <meta name="twitter:description" content="Working on coding agents, bandits, and sequential decision-making.">
+    <meta name="twitter:description" content="Research and engineering at LatentForce, with interests in learning algorithms, bandits, and sequential decision-making.">
     <meta name="twitter:image" content="https://akash1764591.github.io/images/akash_profile.jpg">
     <meta name="twitter:image:alt" content="S Akash in Switzerland">
 
-    <link rel="icon" type="image/svg+xml" href="images/favicon.svg?v=2">
-
-    <!-- Font -->
+    <link rel="icon" type="image/svg+xml" href="images/favicon.svg?v=4">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&amp;display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500&amp;display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
 
     <script type="application/ld+json">
     {
@@ -43,419 +40,69 @@
         "worksFor": { "@type": "Organization", "name": "LatentForce", "url": "https://www.latentforce.ai/" },
         "alumniOf": { "@type": "CollegeOrUniversity", "name": "Indian Institute of Technology Patna", "url": "https://www.iitp.ac.in/" },
         "sameAs": [
+            "https://x.com/akash_s164553",
             "https://scholar.google.com/citations?user=j8UvD20AAAAJ",
             "https://github.com/akash1764591",
             "https://www.linkedin.com/in/akash-s-473781263/"
         ]
     }
     </script>
-
-    <style>
-        :root {
-            --ink: #17191c;
-            --body: #34383d;
-            --muted: #6d737b;
-            --faint: #a6abb1;
-            --accent: #315f8c;
-            --accent-2: #173f66;
-            --line: #e3e6e9;
-            --bg: #ffffff;
-            --card: #ffffff;
-            --nav-bg: rgba(255,255,255,0.94);
-        }
-        * { box-sizing: border-box; }
-        ::selection { color: var(--ink); background: #dce8f3; }
-        html { scroll-behavior: smooth; scroll-padding-top: 78px; }
-        body {
-            margin: 0; overflow-x: clip;
-            font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            font-size: 16px; line-height: 1.65; color: var(--body); background: var(--bg);
-            text-rendering: optimizeLegibility;
-        }
-        a { color: var(--accent); text-decoration: none; transition: color .15s ease; }
-        a:hover { color: var(--accent-2); }
-        a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
-        em { font-style: italic; color: var(--ink); }
-        a em { color: inherit; }
-        .skip-link {
-            position: fixed; top: 8px; left: 8px; z-index: 100; padding: 9px 12px;
-            color: var(--bg); background: var(--ink); transform: translateY(-150%);
-        }
-        .skip-link:focus { color: var(--bg); transform: translateY(0); }
-        .site-nav {
-            position: sticky; top: 0; z-index: 10; background: var(--nav-bg);
-            backdrop-filter: blur(12px); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
-        }
-        .site-nav .inner {
-            width: 100%; max-width: 880px; margin: 0 auto; padding: 0 28px;
-            display: flex; align-items: center; gap: 28px;
-        }
-        .site-nav a.nav-link {
-            position: relative; min-height: 42px; padding: 2px 0 0; display: inline-flex; align-items: center;
-            color: var(--muted); font-size: 11.5px; font-weight: 600; letter-spacing: .045em;
-        }
-        .site-nav a.nav-link:hover { color: var(--ink); }
-        .site-nav a.nav-link::after {
-            content: ''; position: absolute; right: 0; bottom: -1px; left: 0; height: 2px;
-            background: var(--ink); transform: scaleX(0); transform-origin: left; transition: transform .18s ease;
-        }
-        .site-nav a.nav-link:hover::after, .site-nav a.nav-link.active::after { transform: scaleX(1); }
-        .site-nav a.nav-link.active { color: var(--ink); }
-        .page { max-width: 880px; margin: 0 auto; padding: 0 28px 28px; }
-        .page-head { padding-bottom: 6px; }
-        main.page { padding-bottom: 0; }
-        .profile { display: flex; gap: 30px; align-items: center; padding: 22px 0 14px; }
-        .portrait { flex-shrink: 0; width: 164px; margin: 0; }
-        .profile .photo { width: 164px; height: 164px; overflow: hidden; border: 1px solid #d4d8dc; }
-        .profile .photo img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: center; }
-        .photo-caption { margin-top: 9px; color: var(--muted); text-align: center; font-size: 10.5px; font-style: italic; line-height: 1.45; }
-        .photo-caption span { display: block; white-space: nowrap; }
-        .profile-text { min-width: 0; }
-        .profile-text h1 { margin: 0 0 8px; color: var(--ink); font-size: 36px; font-weight: 700; letter-spacing: -1.25px; line-height: 1.08; }
-        .profile-text .affil { margin: 0; color: var(--muted); font-size: 13.5px; line-height: 1.6; }
-        .profile-text .affil a { color: var(--body); border-bottom: 1px solid var(--line); }
-        .social { display: flex; gap: 3px; margin-top: 10px; }
-        .social a { width: 44px; height: 44px; display: inline-flex; align-items: center; justify-content: center; color: var(--muted); }
-        .social svg { width: 17px; height: 17px; }
-        .social a:hover { color: var(--ink); transform: translateY(-1px); }
-        .section { margin-top: 30px; }
-        .section-title {
-            margin: 0 0 12px;
-            color: var(--ink); font-size: 12px; font-weight: 700; letter-spacing: .085em; text-transform: uppercase;
-        }
-        #bio { margin-top: 24px; }
-        #bio p { max-width: 790px; margin: 0 0 9px; line-height: 1.64; }
-        #bio p:last-child { margin-bottom: 0; }
-        #bio p a, .news-row > span a, .tl-item p a {
-            text-decoration: underline; text-decoration-color: rgba(58,110,165,.32);
-            text-decoration-thickness: 1px; text-underline-offset: 2.5px;
-        }
-        #bio p a:hover, .news-row > span a:hover, .tl-item p a:hover { text-decoration-color: currentColor; }
-        .news-row { display: grid; grid-template-columns: 96px 1fr; gap: 22px; padding: 7px 0; line-height: 1.48; }
-        .news-date { padding-top: 3px; color: var(--muted); font-size: 10.5px; font-weight: 600; letter-spacing: .09em; text-transform: uppercase; }
-        .news-scroll.news-collapsible .news-row:nth-child(n+4) { display: none; }
-        .news-scroll.news-collapsible.expanded .news-row { display: grid; }
-        .news-toggle {
-            min-height: 36px; margin-top: 2px; padding: 3px 0; border: 0; background: transparent;
-            color: var(--accent); font: inherit; font-size: 12px; font-weight: 600; letter-spacing: .04em; cursor: pointer;
-        }
-        .news-toggle[hidden] { display: none; }
-        .pub-item { padding: 0 0 10px; }
-        .pub-item + .pub-item { padding-top: 13px; border-top: 1px solid var(--line); }
-        .pub-kicker { display: flex; margin-bottom: 4px; color: var(--accent); font-size: 10.5px; font-weight: 600; letter-spacing: .04em; line-height: 1.5; text-transform: uppercase; }
-        .pub-kicker span + span::before { content: '·'; margin: 0 6px; color: var(--faint); }
-        .pub-title { max-width: 800px; margin-bottom: 4px; color: var(--ink); font-size: 17.5px; font-weight: 600; letter-spacing: -.25px; line-height: 1.36; }
-        .pub-title a { color: inherit; }
-        .pub-title a:hover { color: var(--accent); }
-        .pub-authors { margin-bottom: 2px; color: var(--body); font-size: 13.5px; }
-        .pub-authors strong { color: #2c3238; font-weight: 600; }
-        .pub-summary { max-width: 730px; margin: 6px 0 0; color: #59616a; font-size: 14px; line-height: 1.56; }
-        .pub-links { display: flex; flex-wrap: wrap; gap: 9px; margin-top: 5px; }
-        .pub-links a {
-            min-height: 27px; display: inline-flex; align-items: center; color: var(--accent);
-            font-size: 12px; font-weight: 600; text-decoration: underline; text-underline-offset: 3px;
-        }
-        .timeline { margin: 0; padding: 0; }
-        .tl-item { padding: 0 0 18px; }
-        .tl-item:last-child { padding-bottom: 0; }
-        .tl-head { display: flex; align-items: center; gap: 15px; margin-bottom: 3px; }
-        .tl-logo {
-            width: 52px; height: 52px; flex-shrink: 0; overflow: hidden;
-            display: flex; align-items: center; justify-content: center; background: transparent;
-        }
-        .tl-logo img { width: 100%; height: 100%; object-fit: contain; padding: 0; }
-        .tl-item:nth-child(3) .tl-logo { width: 64px; }
-        .tl-logo:hover { opacity: .78; }
-        .tl-role { color: var(--ink); font-size: 15.5px; font-weight: 700; line-height: 1.3; }
-        .tl-role .org { color: var(--accent); }
-        .tl-meta { color: var(--muted); font-size: 12px; letter-spacing: .02em; }
-        .tl-position { display: flex; align-items: baseline; gap: 12px; margin-top: 2px; }
-        .tl-position-name { min-width: 132px; color: var(--ink); font-size: 13px; font-weight: 600; }
-        .tl-item p { max-width: 700px; margin: 5px 0 0; color: #59616a; font-size: 14px; line-height: 1.56; }
-        .footer { max-width: 880px; margin: 24px auto 0; padding: 0 28px 22px; color: var(--muted); text-align: left; font-size: 11.5px; }
-        .footer a { color: var(--muted); }
-        @media (max-width: 640px) {
-            .page { padding: 0 20px 30px; }
-            .page.page-head { padding-bottom: 6px; }
-            .profile { flex-direction: column; gap: 12px; padding: 16px 0 11px; text-align: center; }
-            .portrait { width: 190px; }
-            .profile .photo { width: 156px; height: 156px; margin: 0 auto; }
-            .profile-text { width: 100%; }
-            .profile-text h1 { font-size: 29px; letter-spacing: -.8px; }
-            .social { justify-content: center; }
-            .site-nav .inner { gap: 22px; overflow-x: auto; padding: 0 20px; scrollbar-width: none; }
-            .site-nav .inner::-webkit-scrollbar { display: none; }
-            .site-nav a.nav-link { flex: 0 0 auto; font-size: 12px; letter-spacing: .015em; }
-            .section { margin-top: 28px; }
-            #bio { margin-top: 20px; }
-            .section-title { margin-bottom: 11px; }
-            .news-row { grid-template-columns: 72px 1fr; gap: 12px; padding: 8px 0; }
-            .news-row > span, .pub-title, .pub-summary { min-width: 0; overflow-wrap: anywhere; }
-            .photo-caption span { white-space: normal; }
-            .tl-head > div:last-child { min-width: 0; }
-            .footer { padding-right: 20px; padding-left: 20px; }
-        }
-        @media (max-width: 420px) {
-            .tl-position { display: block; margin-top: 5px; }
-            .tl-position-name { display: block; }
-        }
-        @media (prefers-reduced-motion: reduce) {
-            html { scroll-behavior: auto; }
-            *, *::before, *::after { transition-duration: .01ms !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; }
-        }
-    </style>
 </head>
 
 <body>
     <a class="skip-link" href="#main-content">Skip to main content</a>
 
-    <header class="page page-head">
+    <main class="home-page" id="main-content">
+        <div class="home-grid">
+            <section aria-labelledby="home-title">
+                <h1 class="home-title" id="home-title"><span class="identity-hover-target">S Akash</span></h1>
+                <p class="role"><a class="role-link identity-hover-target" href="https://www.latentforce.ai/" target="_blank" rel="noopener noreferrer">22 · research scientist at latentforce</a></p>
 
-        <!-- Profile -->
-        <div class="profile">
-            <figure class="portrait">
-                <div class="photo">
-                    <img src="images/akash_profile.jpg" width="640" height="640" alt="S Akash in Switzerland" fetchpriority="high">
-                </div>
-                <figcaption class="photo-caption">
-                    <span>Touching grass, Swiss edition.</span>
-                    <span>When exploration beat exploitation.</span>
-                </figcaption>
-            </figure>
-            <div class="profile-text">
-                <h1>S Akash</h1>
-                <p class="affil">
-                    B.Tech in Electrical Engineering, <a href="https://www.iitp.ac.in/" target="_blank" rel="noopener noreferrer">IIT Patna</a>
-                    &nbsp;&middot;&nbsp; 2026
-                </p>
-                <nav class="social" aria-label="Profile links">
-                    <a href="mailto:akash20041764591@gmail.com" title="Email" aria-label="Email">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
+                <p class="lead">i work across research and engineering at <span class="site-preview-wrap"><a href="https://www.latentforce.ai/" target="_blank" rel="noopener noreferrer">latentforce</a><span class="site-preview" aria-hidden="true"><img src="images/latentforce-preview.jpg" alt=""><span>latentforce.ai</span></span></span>. more broadly, i am interested in how learning algorithms <strong>explore, adapt, and make decisions</strong> over time.</p>
+
+                <details class="read-more">
+                    <summary><span class="more-label">read more</span><span class="less-label">read less</span></summary>
+                    <div class="read-more-copy">
+                        <p>i studied electrical engineering at iit patna. i am interested in systems that have to act <strong>without seeing the full picture</strong>.</p>
+                        <p>sometimes the missing information is a <strong>reward</strong>, sometimes it is another player&rsquo;s <strong>preference</strong>, and sometimes it is the small piece of a <strong>codebase</strong> needed to solve a task. during college, this led me to work on reinforcement learning, markovian bandits, and multi-dueling bandits.</p>
+                        <p>my bachelor&rsquo;s thesis focused on learning algorithms for multi-dueling bandits, built around <strong><a href="blog/best-of-both-worlds-multi-dueling-bandits/index.html">a simple reduction from multi-way winner feedback to ordinary duels</a></strong>. the problems i work on now look different, but the underlying question remains much the same: how can an agent find the right evidence and make a reliable decision from limited feedback?</p>
+                    </div>
+                </details>
+
+                <div class="rule"></div>
+                <h2 class="section-label">research</h2>
+                <p class="research-item"><a href="https://arxiv.org/abs/2606.01159" target="_blank" rel="noopener noreferrer">fairness in two-player zero-sum games with bandit feedback ↗</a> <span class="paper-venue">· preprint</span></p>
+                <p class="research-item"><a href="https://rlj.cs.umass.edu/2026/papers/Paper125.pdf" target="_blank" rel="noopener noreferrer">best-of-both-worlds multi-dueling bandits ↗</a> <span class="paper-venue">· rlc &rsquo;26</span></p>
+
+                <nav class="social-links" aria-label="Profile links">
+                    <a href="https://x.com/akash_s164553" target="_blank" rel="noopener noreferrer" aria-label="S Akash on X">
+                        <svg viewBox="0 0 256 256" aria-hidden="true"><path d="M205.66 194.34a8 8 0 0 1-11.32 11.32L128 139.31l-66.34 66.35a8 8 0 0 1-11.32-11.32L116.69 128 50.34 61.66a8 8 0 0 1 11.32-11.32L128 116.69l66.34-66.35a8 8 0 0 1 11.32 11.32L139.31 128Z"/></svg>
                     </a>
-                    <a href="https://drive.google.com/file/d/1l3oBU-zzhbPDugwjJnki6kt1cyzC_exH/view?usp=sharing" target="_blank" rel="noopener noreferrer" title="CV" aria-label="CV">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6M8 13h8M8 17h6"/></svg>
+                    <a href="https://github.com/akash1764591" target="_blank" rel="noopener noreferrer" aria-label="S Akash on GitHub">
+                        <svg viewBox="0 0 256 256" aria-hidden="true"><path d="M208.31 75.68A59.78 59.78 0 0 0 202.93 28 8 8 0 0 0 196 24a59.75 59.75 0 0 0-48 24h-24a59.75 59.75 0 0 0-48-24 8 8 0 0 0-6.93 4 59.78 59.78 0 0 0-5.38 47.68A58.14 58.14 0 0 0 56 104v8a56.06 56.06 0 0 0 48.44 55.47A39.8 39.8 0 0 0 96 192v8H72a24 24 0 0 1-24-24 40 40 0 0 0-40-40 8 8 0 0 0 0 16 24 24 0 0 1 24 24 40 40 0 0 0 40 40h24v16a8 8 0 0 0 16 0v-40a24 24 0 0 1 48 0v40a8 8 0 0 0 16 0v-40a39.8 39.8 0 0 0-8.44-24.53A56.06 56.06 0 0 0 216 112v-8a58.14 58.14 0 0 0-7.69-28.32ZM200 112a40 40 0 0 1-40 40h-48a40 40 0 0 1-40-40v-8a41.74 41.74 0 0 1 6.9-22.48A8 8 0 0 0 80 73.83a43.81 43.81 0 0 1 .79-33.58 43.88 43.88 0 0 1 32.32 20.06 8 8 0 0 0 6.71 3.69h32.35a8 8 0 0 0 6.74-3.69 43.87 43.87 0 0 1 32.32-20.06 43.81 43.81 0 0 1 .77 33.58 8.09 8.09 0 0 0 1 7.65 41.72 41.72 0 0 1 7 22.52Z"/></svg>
                     </a>
-                    <a href="https://scholar.google.com/citations?user=j8UvD20AAAAJ&amp;hl=en" target="_blank" rel="noopener noreferrer" title="Google Scholar" aria-label="Google Scholar">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 10 9-5 9 5-9 5Z"/><path d="M7 12.2V17c2.8 2.1 7.2 2.1 10 0v-4.8M21 10v6"/></svg>
+                    <a href="https://www.linkedin.com/in/akash-s-473781263/" target="_blank" rel="noopener noreferrer" aria-label="S Akash on LinkedIn">
+                        <svg viewBox="0 0 256 256" aria-hidden="true"><path d="M216 24H40a16 16 0 0 0-16 16v176a16 16 0 0 0 16 16h176a16 16 0 0 0 16-16V40a16 16 0 0 0-16-16Zm0 192H40V40h176ZM96 112v64a8 8 0 0 1-16 0v-64a8 8 0 0 1 16 0Zm88 28v36a8 8 0 0 1-16 0v-36a20 20 0 0 0-40 0v36a8 8 0 0 1-16 0v-64a8 8 0 0 1 15.79-1.78A36 36 0 0 1 184 140ZM100 84a12 12 0 1 1-12-12 12 12 0 0 1 12 12Z"/></svg>
                     </a>
-                    <a href="https://github.com/akash1764591" target="_blank" rel="noopener noreferrer" title="GitHub" aria-label="GitHub">
-                        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .7a11.5 11.5 0 0 0-3.6 22.4c.6.1.8-.2.8-.6v-2.2c-3.3.7-4-1.4-4-1.4-.5-1.4-1.3-1.7-1.3-1.7-1.1-.8.1-.8.1-.8 1.2.1 1.8 1.2 1.8 1.2 1.1 1.8 2.8 1.3 3.5 1 .1-.8.4-1.3.8-1.6-2.6-.3-5.4-1.3-5.4-5.7 0-1.3.4-2.3 1.2-3.1-.1-.3-.5-1.5.1-3.1 0 0 1-.3 3.2 1.2A11 11 0 0 1 12 6.4c1 0 2 .1 2.9.4 2.2-1.5 3.2-1.2 3.2-1.2.6 1.6.2 2.8.1 3.1.8.8 1.2 1.8 1.2 3.1 0 4.4-2.7 5.4-5.4 5.7.4.4.8 1.1.8 2.2v3.2c0 .4.2.7.8.6A11.5 11.5 0 0 0 12 .7Z"/></svg>
+                    <a href="https://scholar.google.com/citations?user=j8UvD20AAAAJ" target="_blank" rel="noopener noreferrer" aria-label="S Akash on Google Scholar">
+                        <svg viewBox="0 0 256 256" aria-hidden="true"><path d="M244 96 128 32 12 96l44 24v56h16v-47l56 31 116-64ZM72 137v55c0 18 25 32 56 32s56-14 56-32v-55l-56 31Z"/></svg>
                     </a>
-                    <a href="https://www.linkedin.com/in/akash-s-473781263/" target="_blank" rel="noopener noreferrer" title="LinkedIn" aria-label="LinkedIn">
-                        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.5 3h-17A1.5 1.5 0 0 0 2 4.5v15A1.5 1.5 0 0 0 3.5 21h17a1.5 1.5 0 0 0 1.5-1.5v-15A1.5 1.5 0 0 0 20.5 3ZM8 18H5V9h3ZM6.5 7.8A1.75 1.75 0 1 1 6.5 4.3a1.75 1.75 0 0 1 0 3.5ZM19 18h-3v-4.4c0-2.7-3-2.5-3 0V18h-3V9h3v1.4c1.4-2.5 6-2.7 6 2.4Z"/></svg>
+                    <a href="mailto:akash20041764591@gmail.com" aria-label="Email S Akash">
+                        <svg viewBox="0 0 256 256" aria-hidden="true"><path d="M224 48H32a8 8 0 0 0-8 8v136a16 16 0 0 0 16 16h176a16 16 0 0 0 16-16V56a8 8 0 0 0-8-8Zm-20.57 16L128 133.15 52.57 64ZM216 192H40V74.19l82.59 75.71a8 8 0 0 0 10.82 0L216 74.19Z"/></svg>
                     </a>
                 </nav>
-            </div>
+            </section>
+
+            <aside class="home-side">
+                <section aria-labelledby="writing-label">
+                    <h2 class="section-label" id="writing-label">i write occasionally</h2>
+                    <p><a href="blog/best-of-both-worlds-multi-dueling-bandits/index.html">best-of-both-worlds multi-dueling bandits</a></p>
+                </section>
+
+            </aside>
         </div>
-
-    </header>
-
-    <!-- Section navigation -->
-    <nav class="site-nav" aria-label="Section navigation">
-        <div class="inner">
-            <a class="nav-link" href="#bio">About</a>
-            <a class="nav-link" href="#writing">Writing</a>
-            <a class="nav-link" href="#updates">Updates</a>
-            <a class="nav-link" href="#publications">Research</a>
-            <a class="nav-link" href="#experience">Experience</a>
-        </div>
-    </nav>
-
-    <main class="page" id="main-content">
-
-        <!-- Bio -->
-        <section class="section" id="bio" aria-labelledby="bio-title">
-            <h2 class="section-title" id="bio-title">About</h2>
-            <p>
-                At <a href="https://www.latentforce.ai/" target="_blank" rel="noopener noreferrer">LatentForce</a>, I work on agents that search large codebases, gather the right evidence, and coordinate across models. My broader research interests are learning and decision-making under limited or structured feedback.
-            </p>
-            <p>
-                My bachelor&rsquo;s thesis with <a href="https://pratikgajane.github.io/" target="_blank" rel="noopener noreferrer">Pratik Gajane</a> asked whether one multi-dueling bandit algorithm could handle both stochastic and adversarial preferences. Earlier, I studied scheduling with <a href="https://www.irit.fr/~Urtzi.Ayesta/" target="_blank" rel="noopener noreferrer">Urtzi Ayesta</a> at IRIT Toulouse and Markovian bandits with <a href="https://sites.google.com/view/tejaspbodas/" target="_blank" rel="noopener noreferrer">Tejas Bodas</a> at IIIT Hyderabad. The <a href="https://www.inde.campusfrance.org/charpak-lab-scholarship" target="_blank" rel="noopener noreferrer">Charpak Scholarship</a> supported my time in Toulouse.
-            </p>
-            <p>
-                If you&rsquo;re working on related problems, feel free to <a href="mailto:akash20041764591@gmail.com">mail me</a>.
-            </p>
-        </section>
-
-        <!-- Writing -->
-        <section class="section" id="writing" aria-labelledby="writing-title">
-            <h2 class="section-title" id="writing-title">Writing</h2>
-            <div class="news-row">
-                <time class="news-date" datetime="2026-08-10">Aug 2026</time>
-                <span><a href="blog/best-of-both-worlds-multi-dueling-bandits/"><em>Best-of-Both-Worlds Multi-Dueling Bandits</em></a></span>
-            </div>
-        </section>
-
-        <!-- Updates -->
-        <section class="section" id="updates" aria-labelledby="updates-title">
-            <h2 class="section-title" id="updates-title">Updates</h2>
-            <div class="news-scroll" id="newsList">
-                <div class="news-row">
-                    <time class="news-date" datetime="2026-06">Jun 2026</time>
-                    <span>Joined <a href="https://www.latentforce.ai/" target="_blank" rel="noopener noreferrer">LatentForce</a> full-time as a Research Scientist.</span>
-                </div>
-                <div class="news-row">
-                    <time class="news-date" datetime="2026-05">May 2026</time>
-                    <span>Our preprint <a href="https://arxiv.org/abs/2606.01159" target="_blank" rel="noopener noreferrer"><em>Fairness in Two-Player Zero-Sum Games with Bandit Feedback</em></a> is now on arXiv.</span>
-                </div>
-                <div class="news-row">
-                    <time class="news-date" datetime="2026-05">May 2026</time>
-                    <span>Our multi-dueling bandits paper was accepted at <a href="https://rl-conference.cc/" target="_blank" rel="noopener noreferrer">RLC 2026</a> and <a href="https://probml.cc/" target="_blank" rel="noopener noreferrer">ProbML @ ICML 2026</a>.</span>
-                </div>
-                <div class="news-row">
-                    <time class="news-date" datetime="2025-12">Dec 2025</time>
-                    <span>Attended the <a href="https://alphagrep.iiit.ac.in/acm-winter-school.html" target="_blank" rel="noopener noreferrer">ACM Winter School on AI &amp; Finance</a> in Hyderabad.</span>
-                </div>
-                <div class="news-row">
-                    <time class="news-date" datetime="2025-10">Oct 2025</time>
-                    <span>Team <em>Apex</em> placed 24th among more than 80,000 participants in the Amazon ML Challenge 2025.</span>
-                </div>
-                <div class="news-row">
-                    <time class="news-date" datetime="2025-03">Mar 2025</time>
-                    <span>Selected for the France Excellence Charpak Scholarship, among 35 Indian undergraduates.</span>
-                </div>
-                <div class="news-row">
-                    <time class="news-date" datetime="2024-12">Dec 2024</time>
-                    <span>Selected for the CS Theory Winter Residency at IIT Delhi, a nationwide cohort of 30 students.</span>
-                </div>
-            </div>
-            <button class="news-toggle" id="newsToggle" type="button" aria-controls="newsList" aria-expanded="false" hidden>Show older updates</button>
-        </section>
-
-        <!-- Research -->
-        <section class="section" id="publications" aria-labelledby="publications-title">
-            <h2 class="section-title" id="publications-title">Research</h2>
-            <div class="pub-list">
-                <article class="pub-item">
-                    <div class="pub-kicker"><span>Preprint</span></div>
-                    <div class="pub-content">
-                        <div class="pub-title">
-                            <a href="https://arxiv.org/abs/2606.01159" target="_blank" rel="noopener noreferrer">Fairness in Two-Player Zero-Sum Games with Bandit Feedback</a>
-                        </div>
-                        <div class="pub-authors"><strong>S Akash</strong>, Pratik Gajane</div>
-                        <p class="pub-summary">What does it cost to give every action a fair chance when players observe only bandit feedback? We recast the constrained game and bound both regret and the price of fairness.</p>
-                        <div class="pub-links">
-                            <a href="https://arxiv.org/abs/2606.01159" target="_blank" rel="noopener noreferrer">Paper</a>
-                        </div>
-                    </div>
-                </article>
-
-                <article class="pub-item">
-                    <div class="pub-kicker"><span>RLC &rsquo;26</span><span>ProbML @ ICML &rsquo;26</span></div>
-                    <div class="pub-content">
-                        <div class="pub-title">
-                            <a href="https://arxiv.org/abs/2603.18972" target="_blank" rel="noopener noreferrer">Best-of-Both-Worlds Multi-Dueling Bandits: Unified Algorithms for Stochastic and Adversarial Preferences under Condorcet and Borda Objectives</a>
-                        </div>
-                        <div class="pub-authors"><strong>S Akash</strong>, Pratik Gajane, Jawar Singh</div>
-                        <p class="pub-summary">Can one algorithm learn from predictable preferences without becoming fragile to adversarial ones? We answer yes for multi-dueling bandits under both Condorcet and Borda objectives.</p>
-                        <div class="pub-links">
-                            <a href="blog/best-of-both-worlds-multi-dueling-bandits/">Blog</a>
-                            <a href="https://arxiv.org/abs/2603.18972" target="_blank" rel="noopener noreferrer">Paper</a>
-                            <a href="DATA/Multi_Dueling_Bandits_extended_abstract.pdf" target="_blank" rel="noopener noreferrer">Extended abstract</a>
-                        </div>
-                    </div>
-                </article>
-            </div>
-        </section>
-
-        <!-- Experience -->
-        <section class="section" id="experience" aria-labelledby="experience-title">
-            <h2 class="section-title" id="experience-title">Experience</h2>
-
-            <div class="timeline">
-                <article class="tl-item">
-                    <div class="tl-head">
-                        <a class="tl-logo" href="https://www.latentforce.ai/" target="_blank" rel="noopener noreferrer" aria-label="LatentForce website"><img src="images/latentforce_ai_logo.jpeg" width="200" height="200" alt="" loading="lazy" decoding="async"></a>
-                        <div>
-                            <div class="tl-role"><a class="org" href="https://www.latentforce.ai/" target="_blank" rel="noopener noreferrer">LatentForce</a></div>
-                            <div class="tl-position">
-                                <span class="tl-position-name">Research Scientist</span>
-                                <span class="tl-meta">Jun 2026 &ndash; Present</span>
-                            </div>
-                            <div class="tl-position">
-                                <span class="tl-position-name">ML Research Intern</span>
-                                <span class="tl-meta">Jan 2026 &ndash; May 2026</span>
-                            </div>
-                        </div>
-                    </div>
-                    <p>Building code intelligence and collaborative agent systems that explore, reason about, and modify large codebases.</p>
-                </article>
-
-                <article class="tl-item">
-                    <div class="tl-head">
-                        <a class="tl-logo" href="https://www.irit.fr/" target="_blank" rel="noopener noreferrer" aria-label="IRIT Toulouse website"><img src="images/irit_logo.jpg" width="160" height="160" alt="" loading="lazy" decoding="async"></a>
-                        <div>
-                            <div class="tl-role">Research Intern <a class="org" href="https://www.irit.fr/" target="_blank" rel="noopener noreferrer">&middot; IRIT Toulouse</a></div>
-                            <div class="tl-meta">May 2025 &ndash; July 2025 &nbsp;&middot;&nbsp; Advisor: Dr. Urtzi Ayesta</div>
-                        </div>
-                    </div>
-                    <p>Studied scheduling under uncertainty through the development and analysis of Whittle index policies with the RMESS team.</p>
-                </article>
-
-                <article class="tl-item">
-                    <div class="tl-head">
-                        <a class="tl-logo" href="https://www.iiit.ac.in/" target="_blank" rel="noopener noreferrer" aria-label="IIIT Hyderabad website"><img src="images/iiit_hyderabad_logo.jpg" width="160" height="80" alt="" loading="lazy" decoding="async"></a>
-                        <div>
-                            <div class="tl-role">Research Intern <a class="org" href="https://www.iiit.ac.in/" target="_blank" rel="noopener noreferrer">&middot; IIIT Hyderabad</a></div>
-                            <div class="tl-meta">May 2024 &ndash; July 2024 &nbsp;&middot;&nbsp; Advisor: Dr. Tejas Bodas</div>
-                        </div>
-                    </div>
-                    <p>Developed algorithms for Markovian bandits and explored a hybrid approach to make Q-learning more sample-efficient.</p>
-                </article>
-            </div>
-        </section>
-
+        <span class="identity-preview" aria-hidden="true"><img src="images/akash_profile.jpg" alt=""></span>
     </main>
-
-    <footer class="footer">
-        &copy; 2026 S Akash
-    </footer>
-
-    <script>
-        // Keep recent updates concise without hiding the archive
-        (function () {
-            var list = document.getElementById('newsList');
-            var btn = document.getElementById('newsToggle');
-            var visibleCount = 3;
-            if (!list || !btn || list.children.length <= visibleCount) return;
-            list.classList.add('news-collapsible');
-            btn.hidden = false;
-            btn.textContent = 'Show older updates ↓';
-            btn.addEventListener('click', function () {
-                var expanded = list.classList.toggle('expanded');
-                btn.setAttribute('aria-expanded', String(expanded));
-                btn.textContent = expanded ? 'Show fewer updates ↑' : 'Show older updates ↓';
-            });
-        })();
-
-        // Scrollspy — highlight the nav link for the section in view
-        (function () {
-            var links = [].slice.call(document.querySelectorAll('.site-nav a.nav-link'));
-            var map = {}, ids = [];
-            links.forEach(function (l) {
-                var id = (l.getAttribute('href') || '').replace('#', '');
-                var sec = id && document.getElementById(id);
-                if (sec) { map[id] = l; ids.push(id); }
-            });
-            if (!ids.length || !('IntersectionObserver' in window)) return;
-            var ratios = {};
-            var spy = new IntersectionObserver(function (entries) {
-                entries.forEach(function (e) { ratios[e.target.id] = e.isIntersecting ? e.intersectionRatio : 0; });
-                var current = null, best = -1;
-                ids.forEach(function (id) { var v = ratios[id] || 0; if (v > best) { best = v; current = id; } });
-                links.forEach(function (l) {
-                    l.classList.remove('active');
-                    l.removeAttribute('aria-current');
-                });
-                if (current && map[current]) {
-                    map[current].classList.add('active');
-                    map[current].setAttribute('aria-current', 'location');
-                }
-            }, { rootMargin: '-70px 0px -55% 0px', threshold: [0, 0.2, 0.5, 1] });
-            ids.forEach(function (id) { spy.observe(document.getElementById(id)); });
-        })();
-
-    </script>
 
 </body>
 </html>
