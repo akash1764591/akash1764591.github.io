@@ -1,6 +1,14 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" role="img" aria-label="S Akash mark">
-  <rect width="64" height="64" rx="12" fill="#080808"/>
-  <g fill="none" stroke="#e9e7e1" stroke-width="7" stroke-linecap="square" stroke-linejoin="miter">
+  <style>
+    .chip { fill: #0a0908 }
+    .mark { stroke: #e9e7e1 }
+    @media (prefers-color-scheme: light) {
+      .chip { fill: #faf9f6 }
+      .mark { stroke: #14130f }
+    }
+  </style>
+  <rect class="chip" width="64" height="64" rx="12"/>
+  <g class="mark" fill="none" stroke-width="7" stroke-linecap="square" stroke-linejoin="miter">
     <path d="M15.5 48.5 29.5 15.5"/>
     <path d="M34.5 15.5 40 28.5"/>
     <path d="M43.2 36 48.5 48.5"/>

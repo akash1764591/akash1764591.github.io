@@ -1,0 +1,5 @@
+# Local editor / tooling config
+.claude/
+
+# macOS
+.DS_Store

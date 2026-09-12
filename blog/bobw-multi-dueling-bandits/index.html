@@ -6,7 +6,8 @@
     <title>Best-of-Both-Worlds Multi-Dueling Bandits · S Akash</title>
     <meta name="author" content="S Akash">
     <meta name="description" content="A short note on the two reductions behind our best-of-both-worlds result for multi-dueling bandits.">
-    <meta name="theme-color" content="#080808">
+    <meta name="theme-color" content="#0a0908" media="(prefers-color-scheme: dark)">
+    <meta name="theme-color" content="#faf9f6" media="(prefers-color-scheme: light)">
     <link rel="canonical" href="https://akash1764591.github.io/blog/bobw-multi-dueling-bandits/">
 
     <meta property="og:title" content="Best-of-Both-Worlds Multi-Dueling Bandits">
@@ -24,7 +25,7 @@
     <meta name="twitter:image" content="https://akash1764591.github.io/blog/bobw-multi-dueling-bandits/assets/rlc-2026-poster.jpg">
     <meta name="twitter:image:alt" content="RLC 2026 poster for Best-of-Both-Worlds Multi-Dueling Bandits">
 
-    <link rel="icon" type="image/svg+xml" href="../../images/favicon.svg?v=4">
+    <link rel="icon" type="image/svg+xml" href="../../images/favicon.svg?v=5">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500&amp;display=swap" rel="stylesheet">
@@ -34,24 +35,25 @@
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.18.3/dist/contrib/auto-render.min.js" integrity="sha384-bjyGPfbij8/NDKJhSGZNP/khQVgtHUE5exjm4Ydllo42FwIgYsdLO2lXGmRBf5Mz" crossorigin="anonymous" onload="renderMathInElement(document.body);"></script>
 
     <link rel="stylesheet" href="../../styles.css">
+    <script>document.documentElement.classList.add('motion-ready');</script>
 </head>
 
 <body>
-    <a class="skip-link" href="#article">Skip to article</a>
+    <a class="skip-link" href="#article">skip to article</a>
 
     <nav class="article-nav" aria-label="Blog navigation">
         <a href="../../">← home</a>
-        <a href="https://rlj.cs.umass.edu/2026/papers/Paper125.pdf" target="_blank" rel="noopener noreferrer">Paper ↗</a>
+        <a href="https://arxiv.org/abs/2603.18972" target="_blank" rel="noopener noreferrer">paper ↗</a>
     </nav>
 
     <main class="article-main" id="article">
         <header class="article-head">
-            <h1 class="article-title">Best-of-Both-Worlds<br>Multi-Dueling Bandits</h1>
-            <div class="article-meta">S Akash · August 10, 2026 · 5 min read</div>
+            <h1 class="article-title">best-of-both-worlds<br>multi-dueling bandits</h1>
+            <div class="article-meta">S Akash · august 10, 2026 · 5 min read</div>
         </header>
 
         <article class="article-body">
-            <p class="intro">this is a short note on our <a href="https://rlj.cs.umass.edu/2026/papers/Paper125.pdf" target="_blank" rel="noopener noreferrer">paper</a>. i wanted to write down the two reductions that made the result click for me.</p>
+            <p class="intro">this is a short note on our <a href="https://arxiv.org/abs/2603.18972" target="_blank" rel="noopener noreferrer">paper</a>. i wanted to write down the two reductions that made the result click for me.</p>
 
             <h2>the problem</h2>
 
@@ -104,7 +106,7 @@
 
             <p>the factor \(\beta_m\) lies between \(1/2\) and \(1\), so every head-to-head winner is preserved. that is enough to place a standard dueling algorithm inside the multi-way interface. we call the resulting wrapper <strong>MetaDueling</strong>.</p>
 
-            <h2>condorcet and borda behave differently</h2>
+            <h2>Condorcet and Borda behave differently</h2>
 
             <p>the Condorcet and Borda objectives use different information. a <strong>Condorcet winner</strong> beats every other option directly, while a <strong>Borda winner</strong> has the best average performance against all opponents.</p>
 
@@ -166,13 +168,13 @@
 
             <p>i now think about the result in two pieces: duplication handles the mismatch between winner-only group feedback and ordinary duels, while monitoring handles the mismatch between the stochastic and adversarial regimes.</p>
 
-            <p>the poster below puts the setup, both algorithms, and the guarantees in one place. thanks to <a href="https://pratikgajane.github.io/" target="_blank" rel="noopener noreferrer">pratik</a> for somehow fitting the whole result onto one page.</p>
+            <p>the poster below puts the setup, both algorithms, and the guarantees in one place. thanks to <a href="https://pratikgajane.github.io/" target="_blank" rel="noopener noreferrer">Pratik</a> for somehow fitting the whole result onto one page.</p>
 
             <figure class="poster-figure">
                 <button class="poster-link" type="button" aria-haspopup="dialog" aria-controls="poster-dialog" aria-label="Enlarge the RLC 2026 poster">
                     <img src="assets/rlc-2026-poster.jpg" width="1800" height="1273" loading="lazy" decoding="async" alt="RLC 2026 poster for Best-of-Both-Worlds Multi-Dueling Bandits, summarizing MetaDueling and SA-MiDEX">
                 </button>
-                <figcaption>our poster for rlc 2026</figcaption>
+                <figcaption>our poster for RLC 2026</figcaption>
             </figure>
 
             <dialog class="poster-dialog" id="poster-dialog" aria-label="RLC 2026 poster">
@@ -191,6 +193,8 @@
             if (event.target === posterDialog) posterDialog.close();
         });
     </script>
+
+    <script src="../../interactions.js" defer></script>
 
 </body>
 </html>
