@@ -407,6 +407,7 @@ a:focus-visible, button:focus-visible { outline: 1px solid var(--ink); outline-o
 @media (max-width: 680px) {
     .home-page { min-height: auto; padding: 56px 23px 56px; }
     .home-grid { grid-template-columns: minmax(0, 1fr); gap: 0; }
+    .home-title { background: none; color: var(--ink); -webkit-text-fill-color: var(--ink); }
     .home-side { width: 100%; }
     .article-nav { padding-right: 23px; padding-left: 23px; }
     .article-main { padding: 56px 23px 64px; }
