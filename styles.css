@@ -415,9 +415,7 @@ a:focus-visible, button:focus-visible { outline: 1px solid var(--ink); outline-o
     .article-body h2 { margin-top: 41px; }
     .article-body figure { overflow-x: auto; }
     .diagram { min-width: 540px; }
-    .article-body figcaption::after { content: " · swipe →"; color: var(--faint); }
     .article-body .poster-figure { width: 100%; margin-left: 0; translate: none; overflow: visible; }
-    .poster-figure figcaption::after { content: none; }
     .math-display { text-align: left; }
 }
 
