@@ -9,9 +9,7 @@
   </style>
   <rect class="chip" width="64" height="64" rx="12"/>
   <g class="mark" fill="none" stroke-width="7" stroke-linecap="square" stroke-linejoin="miter">
-    <path d="M15.5 48.5 29.5 15.5"/>
-    <path d="M34.5 15.5 40 28.5"/>
-    <path d="M43.2 36 48.5 48.5"/>
-    <path d="M23 35.5h16.5"/>
+    <path d="M15.5 48.5 31 15.5 48.5 48.5"/>
+    <path d="M22 38 42 33"/>
   </g>
 </svg>

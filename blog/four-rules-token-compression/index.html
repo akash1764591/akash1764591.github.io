@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Four Decisions Behind a Token Compressor · S Akash</title>
+    <meta name="author" content="S Akash">
+    <meta name="description" content="How RTK and Headroom shrink coding-agent inputs, preserve diagnostics, recover omitted detail, and account for prompt caching.">
+    <meta name="theme-color" content="#0a0908" media="(prefers-color-scheme: dark)">
+    <meta name="theme-color" content="#faf9f6" media="(prefers-color-scheme: light)">
+    <link rel="canonical" href="https://akash1764591.github.io/blog/four-rules-token-compression/">
+
+    <meta property="og:title" content="Four Decisions Behind a Token Compressor">
+    <meta property="og:description" content="How RTK and Headroom shrink coding-agent inputs, preserve diagnostics, recover omitted detail, and account for prompt caching.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://akash1764591.github.io/blog/four-rules-token-compression/">
+    <meta property="article:published_time" content="2026-09-13">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Four Decisions Behind a Token Compressor">
+    <meta name="twitter:description" content="How RTK and Headroom shrink coding-agent inputs, preserve diagnostics, recover omitted detail, and account for prompt caching.">
+
+    <link rel="icon" type="image/svg+xml" href="../../images/favicon.svg?v=6">
+    <link rel="preload" href="../../fonts/geist-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="stylesheet" href="../../styles.css">
+    <script>document.documentElement.classList.add('motion-ready');</script>
+</head>
+
+<body>
+    <a class="skip-link" href="#article">skip to article</a>
+
+    <nav class="article-nav" aria-label="blog navigation">
+        <a href="../../">← home</a>
+    </nav>
+
+    <main class="article-main" id="article">
+        <header class="article-head">
+            <h1 class="article-title">four decisions behind a token compressor</h1>
+            <div class="article-meta">S Akash · september 13, 2026 · 4 min read</div>
+        </header>
+
+        <article class="article-body">
+            <p class="intro">a test run prints 200 passes and one failed assertion. the agent needs the failure, not the 200 green lines. where can we remove those lines without hiding the cause? <a href="https://github.com/rtk-ai/rtk" target="_blank" rel="noopener noreferrer">RTK</a> and <a href="https://github.com/headroomlabs-ai/headroom" target="_blank" rel="noopener noreferrer">Headroom</a> answer at different points in the same trip from command to model.</p>
+
+            <h2>1. at the shell</h2>
+
+            <p>RTK runs in front of a shell command. its <a href="https://github.com/rtk-ai/rtk#quick-start" target="_blank" rel="noopener noreferrer">Bash hook</a> can change <code class="terminal-command">git status</code> to <code class="terminal-command">rtk git status</code> before the command runs. because RTK knows the command, it can group status files, trim a diff, or collapse passing tests while keeping failures. it also <a href="https://github.com/rtk-ai/rtk/blob/develop/docs/contributing/ARCHITECTURE.md#design-principles" target="_blank" rel="noopener noreferrer">preserves the exit code</a>. a short failure remains a failure.</p>
+
+            <figure class="output-example">
+                <pre class="terminal-output"><code>$ rtk test cargo test
+FAILED: 2/15 tests
+test_edge_case: assertion failed
+test_overflow: panic at utils.rs:18</code></pre>
+                <figcaption>schematic output from <a href="https://github.com/rtk-ai/rtk#examples" target="_blank" rel="noopener noreferrer">RTK's test example</a>: passing lines collapse; failure details remain.</figcaption>
+            </figure>
+
+            <p>the hook only sees shell commands. an agent's built-in Read or Grep tool bypasses it. RTK can also cut too far: an <a href="https://github.com/rtk-ai/rtk/issues/2673" target="_blank" rel="noopener noreferrer">open proposal</a> shows a two-line <code class="terminal-command">git push origin main</code> result losing the destination repository. if you needed to check where the code went, that line was the answer.</p>
+
+            <h2>2. before the model</h2>
+
+            <p>the agent then sends tool results and file reads to the model. Headroom's <a href="https://docs.headroomlabs.ai/docs/architecture" target="_blank" rel="noopener noreferrer">proxy or SDK</a> works at this boundary. it compresses eligible parts of the request without dropping or reordering messages. unlike RTK, it sees the content but may not know which shell command produced it.</p>
+
+            <p>its <a href="https://docs.headroomlabs.ai/docs/architecture#contentrouter" target="_blank" rel="noopener noreferrer">ContentRouter</a> sends logs to a filter that keeps errors and stack traces. JSON arrays go to <a href="https://docs.headroomlabs.ai/docs/smart-crusher" target="_blank" rel="noopener noreferrer">SmartCrusher</a>: first it tries a compact table with every item; if that saves too little, it selects items such as errors and query matches. <a href="https://docs.headroomlabs.ai/docs/architecture#what-headroom-does-not-rewrite" target="_blank" rel="noopener noreferrer">short blocks pass through</a>.</p>
+
+            <h2>3. when a line is missing</h2>
+
+            <p>even a good filter can miss what the agent needs next. RTK's <a href="https://github.com/rtk-ai/rtk/blob/develop/docs/guide/getting-started/configuration.md#recall-system" target="_blank" rel="noopener noreferrer">recall system</a> saves full output for failed or trimmed commands. <code class="terminal-command">rtk recall &lt;hash&gt;</code> reads it without rerunning the command; <code class="terminal-command">rtk proxy &lt;command&gt;</code> skips filtering up front. Headroom's <a href="https://docs.headroomlabs.ai/docs/ccr" target="_blank" rel="noopener noreferrer">Compress-Cache-Retrieve</a> keeps the original block locally and leaves a marker. the model can use <code>headroom_retrieve</code> to fetch it before it expires.</p>
+
+            <figure>
+                <svg class="diagram" viewBox="0 0 650 242" role="img" aria-labelledby="ccr-title ccr-desc">
+                    <title id="ccr-title">Headroom's compress, cache, retrieve path</title>
+                    <desc id="ccr-desc">One tool result becomes a short version with a hash marker for the model and a full original saved locally. If the model needs more detail, it calls headroom_retrieve with that hash, and the full result returns from the local store.</desc>
+                    <text class="muted" x="20" y="23" font-size="11">one result, two versions</text>
+                    <rect class="accent-node" x="20" y="38" width="270" height="62" rx="2"></rect>
+                    <text class="ink" x="38" y="65" font-size="12.5">short result</text>
+                    <text class="muted" x="38" y="83" font-size="10.5">hash=abc123 · sent to model</text>
+                    <rect class="node" x="360" y="38" width="270" height="62" rx="2"></rect>
+                    <text class="ink" x="378" y="65" font-size="12.5">full original</text>
+                    <text class="muted" x="378" y="83" font-size="10.5">saved locally under the hash</text>
+                    <text class="muted" x="20" y="144" font-size="11">later, only if more detail is needed</text>
+                    <rect class="node" x="20" y="162" width="270" height="62" rx="2"></rect>
+                    <text class="ink" x="38" y="189" font-size="12.5">headroom_retrieve</text>
+                    <text class="muted" x="38" y="207" font-size="10.5">model asks for hash=abc123</text>
+                    <rect class="accent-node" x="360" y="162" width="270" height="62" rx="2"></rect>
+                    <text class="ink" x="378" y="189" font-size="12.5">full result returned</text>
+                    <text class="muted" x="378" y="207" font-size="10.5">from the local original</text>
+                    <path class="faint-line" d="M155 100 V162"></path>
+                    <path class="faint-line" d="M150 154 L155 162 L160 154"></path>
+                    <path class="accent-line" d="M290 193 H325 V69 H360"></path>
+                    <path class="accent-line" d="M352 64 L360 69 L352 74"></path>
+                    <path class="accent-line" d="M495 100 V162"></path>
+                    <path class="accent-line" d="M490 154 L495 162 L500 154"></path>
+                </svg>
+                <figcaption>the hash connects the short view to the saved original.</figcaption>
+            </figure>
+
+            <p><a href="https://github.com/redhat-et/ripwire" target="_blank" rel="noopener noreferrer">Red Hat's Ripwire</a> makes a similar trade for source code: show a map of relevant functions and locations, then expand the full code if needed. it advises <a href="https://github.com/redhat-et/ripwire#where-it-pays-most-and-where-it-does-not" target="_blank" rel="noopener noreferrer">skipping the map</a> when one <code>grep</code> is enough.</p>
+
+            <h2>4. on the next request</h2>
+
+            <p>the model can <a href="https://platform.claude.com/docs/en/build-with-claude/prompt-caching" target="_blank" rel="noopener noreferrer">cache the unchanged start</a> of a request, including earlier messages. rewrite an old message and that match breaks. fewer tokens can still cost more if a cheap cache read becomes a new write.</p>
+
+            <figure>
+                <svg class="diagram" viewBox="0 0 650 232" role="img" aria-labelledby="prefix-title prefix-desc">
+                    <title id="prefix-title">a frozen prefix beside a live compression zone</title>
+                    <desc id="prefix-desc">on a repeated request, an unchanged prefix can be read from cache while the live zone is processed. rewriting an earlier byte breaks the match and makes the changed prefix and everything after it uncached.</desc>
+                    <text class="muted" x="20" y="24" font-size="11">same prefix on the next request</text>
+                    <rect class="node" x="20" y="40" width="398" height="58" rx="2"></rect>
+                    <text class="ink" x="38" y="65" font-size="12.5">frozen prefix</text>
+                    <text class="muted" x="38" y="83" font-size="10.5">byte-identical · cache read</text>
+                    <rect class="accent-node" x="430" y="40" width="200" height="58" rx="2"></rect>
+                    <text class="ink" x="448" y="65" font-size="12.5">live zone</text>
+                    <text class="muted" x="448" y="83" font-size="10.5">compress new output here</text>
+                    <path class="faint-line dashed" d="M20 116 H630"></path>
+                    <text class="muted" x="20" y="140" font-size="11">rewrite an earlier byte</text>
+                    <rect class="accent-node" x="20" y="155" width="398" height="58" rx="2"></rect>
+                    <text class="ink" x="38" y="180" font-size="12.5">changed prefix</text>
+                    <text class="muted" x="38" y="198" font-size="10.5">cache miss from the change onward</text>
+                    <rect class="node" x="430" y="155" width="200" height="58" rx="2"></rect>
+                    <text class="ink" x="448" y="180" font-size="12.5">live zone</text>
+                    <text class="muted" x="448" y="198" font-size="10.5">processed as usual</text>
+                    <path class="accent-line" d="M418 184 H430"></path>
+                </svg>
+                <figcaption>shrinking an old message can erase a cheaper cached read of that same message.</figcaption>
+            </figure>
+
+            <p>Headroom's default <a href="https://docs.headroomlabs.ai/docs/architecture#compression-modes-and-provider-caches" target="_blank" rel="noopener noreferrer">cache mode</a> cuts new content and leaves earlier turns alone. RTK filters command output once, before it enters the conversation. for the failed test, the agent sees the assertion now, can fetch the full log later, and keeps old messages unchanged for the next call.</p>
+        </article>
+    </main>
+
+    <script src="../../interactions.js" defer></script>
+</body>
+</html>
