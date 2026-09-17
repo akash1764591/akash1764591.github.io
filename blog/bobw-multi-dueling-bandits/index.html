@@ -1,17 +1,16 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="orbital-light article-page">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Best-of-Both-Worlds Multi-Dueling Bandits · S Akash</title>
     <meta name="author" content="S Akash">
-    <meta name="description" content="A short note on the two reductions behind our best-of-both-worlds result for multi-dueling bandits.">
-    <meta name="theme-color" content="#0a0908" media="(prefers-color-scheme: dark)">
-    <meta name="theme-color" content="#faf9f6" media="(prefers-color-scheme: light)">
+    <meta name="description" content="How arm duplication and monitoring help multi-dueling bandits adapt to stable and changing preferences.">
+    <meta name="theme-color" content="#ffffff">
     <link rel="canonical" href="https://akash1764591.github.io/blog/bobw-multi-dueling-bandits/">
 
     <meta property="og:title" content="Best-of-Both-Worlds Multi-Dueling Bandits">
-    <meta property="og:description" content="A short note on the two reductions behind our best-of-both-worlds result for multi-dueling bandits.">
+    <meta property="og:description" content="How arm duplication and monitoring help multi-dueling bandits adapt to stable and changing preferences.">
     <meta property="og:image" content="https://akash1764591.github.io/blog/bobw-multi-dueling-bandits/assets/rlc-2026-poster.jpg">
     <meta property="og:image:width" content="1800">
     <meta property="og:image:height" content="1273">
@@ -21,7 +20,7 @@
     <meta property="article:published_time" content="2026-08-10">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Best-of-Both-Worlds Multi-Dueling Bandits">
-    <meta name="twitter:description" content="A short note on the two reductions behind our best-of-both-worlds result for multi-dueling bandits.">
+    <meta name="twitter:description" content="How arm duplication and monitoring help multi-dueling bandits adapt to stable and changing preferences.">
     <meta name="twitter:image" content="https://akash1764591.github.io/blog/bobw-multi-dueling-bandits/assets/rlc-2026-poster.jpg">
     <meta name="twitter:image:alt" content="RLC 2026 poster for Best-of-Both-Worlds Multi-Dueling Bandits">
 
@@ -33,15 +32,20 @@
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.18.3/dist/contrib/auto-render.min.js" integrity="sha384-bjyGPfbij8/NDKJhSGZNP/khQVgtHUE5exjm4Ydllo42FwIgYsdLO2lXGmRBf5Mz" crossorigin="anonymous" onload="renderMathInElement(document.body);"></script>
 
     <link rel="stylesheet" href="../../styles.css">
+    <script>try { if (localStorage.getItem('site-theme') === 'dark') { document.documentElement.classList.replace('orbital-light', 'orbital-dark'); } } catch (_) {}</script>
     <script>document.documentElement.classList.add('motion-ready');</script>
 </head>
 
 <body>
     <a class="skip-link" href="#article">skip to article</a>
+    <canvas class="orbital-field" aria-hidden="true"></canvas>
 
     <nav class="article-nav" aria-label="Blog navigation">
         <a href="../../">← home</a>
-        <a href="https://arxiv.org/abs/2603.18972" target="_blank" rel="noopener noreferrer">paper ↗</a>
+        <div class="article-nav-actions">
+            <a href="https://arxiv.org/abs/2603.18972" target="_blank" rel="noopener noreferrer">paper ↗</a>
+            <button class="theme-toggle" type="button" aria-label="switch to dark theme">dark</button>
+        </div>
     </nav>
 
     <main class="article-main" id="article">
@@ -51,11 +55,11 @@
         </header>
 
         <article class="article-body">
-            <p class="intro">this is a short note on our <a href="https://arxiv.org/abs/2603.18972" target="_blank" rel="noopener noreferrer">paper</a>. i wanted to write down the two reductions that made the result click for me.</p>
+            <p class="intro">winner-only group feedback hides the pairwise comparisons an ordinary dueling algorithm expects. stable preferences can also stop being stable. in our <a href="https://arxiv.org/abs/2603.18972" target="_blank" rel="noopener noreferrer">paper</a>, duplication handles the first problem; monitoring handles the second.</p>
 
             <h2>the problem</h2>
 
-            <p>we study multi-dueling bandits: in each round, the learner chooses several arms and sees only the winner. one example i kept in mind was comparing search rankers. several rankers produce results, one is preferred, and everything about the remaining comparisons stays hidden.</p>
+            <p>we study multi-dueling bandits: in each round, the learner chooses several arms and sees only the winner. think of comparing search rankers: several produce results, one is preferred, and every other pairwise comparison stays hidden.</p>
 
             <figure>
                 <svg class="diagram" viewBox="0 0 650 176" role="img" aria-labelledby="winner-feedback-title winner-feedback-desc">
@@ -85,13 +89,11 @@
                 <figcaption>four candidates go in; one winner comes back.</figcaption>
             </figure>
 
-            <p>the basic tension is between learning quickly and staying robust. with stable preferences, it makes sense to settle on a good option early. with adversarially changing preferences, the same confidence can become expensive. the learner does not know in advance which regime it is in.</p>
-
-            <p>our question was whether one algorithm could use stable preferences without becoming fragile when that stability disappears. this is the <a href="https://www.jmlr.org/papers/v22/19-753.html" target="_blank" rel="noopener noreferrer">best-of-both-worlds</a> objective.</p>
+            <p>with stable preferences, the learner can settle on a strong option. if those preferences change adversarially, that early confidence becomes costly. the learner does not know which regime it is in. the <a href="https://www.jmlr.org/papers/v22/19-753.html" target="_blank" rel="noopener noreferrer">best-of-both-worlds</a> objective is to use stability when it exists without depending on it.</p>
 
             <h2>from a group comparison back to a duel</h2>
 
-            <p>the useful observation for Condorcet was a small reduction. if an ordinary dueling algorithm asks to compare \(x\) and \(y\), while the interface expects four items, we submit \(\{x,x,y,y\}\). we report “\(x\) won” whenever either copy of \(x\) is selected.</p>
+            <p>for Condorcet, duplication lets an ordinary dueling algorithm use the multi-way interface. if the algorithm asks to compare \(x\) and \(y\), while the interface expects four items, we submit \(\{x,x,y,y\}\). we report “\(x\) won” whenever either copy of \(x\) is selected.</p>
 
             <p>this duplication weakens the preference signal, but does not reverse it. a true \(70\)-\(30\) preference becomes roughly \(63\)-\(37\). with a group of \(m\) items, every margin is multiplied by the same positive factor:</p>
 
@@ -106,13 +108,11 @@
 
             <h2>Condorcet and Borda behave differently</h2>
 
-            <p>the Condorcet and Borda objectives use different information. a <strong>Condorcet winner</strong> beats every other option directly, while a <strong>Borda winner</strong> has the best average performance against all opponents.</p>
-
-            <p>MetaDueling is enough for the Condorcet objective because only the direction of each pairwise comparison matters. Borda is harder: its score depends on information spread across the entire preference matrix, so preserving the winner of one duel is not enough.</p>
+            <p>this trick is enough for Condorcet: a <strong>Condorcet winner</strong> beats every other option directly, so the direction of each pairwise comparison is what matters. a <strong>Borda winner</strong> has the best average performance against all opponents. that score depends on information spread across the entire preference matrix, which duplication alone does not recover.</p>
 
             <h2>learn quickly, but keep checking</h2>
 
-            <p>Borda needed a second idea. in <strong>SA-MiDEX</strong>, we first sample broadly enough to build a baseline and then eliminate arms that are clearly worse. a small monitoring process keeps checking whether that baseline still agrees with the observations.</p>
+            <p>for Borda, <strong>SA-MiDEX</strong> first samples broadly enough to build a baseline, then eliminates arms that are clearly worse. a monitoring process keeps checking whether the observations still agree with that baseline.</p>
 
             <figure>
                 <svg class="diagram" viewBox="0 0 650 224" role="img" aria-labelledby="samidex-title samidex-desc">
@@ -162,9 +162,9 @@
 
             <p>random noise is the annoying part: it can look like drift for a while, so the switching threshold has to be conservative. a persistent change eventually grows beyond ordinary fluctuation, and that is when the algorithm gives up the stochastic assumption.</p>
 
-            <h2>how i think about the result</h2>
+            <h2>what each piece solves</h2>
 
-            <p>i now think about the result in two pieces: duplication handles the mismatch between winner-only group feedback and ordinary duels, while monitoring handles the mismatch between the stochastic and adversarial regimes.</p>
+            <p>duplication changes the feedback interface without reversing the preferred winner. monitoring lets the algorithm use a stable baseline without trusting it indefinitely.</p>
 
             <p>the poster below puts the setup, both algorithms, and the guarantees in one place. thanks to <a href="https://pratikgajane.github.io/" target="_blank" rel="noopener noreferrer">Pratik</a> for somehow fitting the whole result onto one page.</p>
 
@@ -193,6 +193,7 @@
     </script>
 
     <script src="../../interactions.js" defer></script>
+    <script src="../../orbital-background.js" defer></script>
 
 </body>
 </html>

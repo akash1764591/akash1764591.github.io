@@ -1,13 +1,12 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="orbital-light article-page">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Four Decisions Behind a Token Compressor · S Akash</title>
     <meta name="author" content="S Akash">
     <meta name="description" content="How RTK and Headroom shrink coding-agent inputs, preserve diagnostics, recover omitted detail, and account for prompt caching.">
-    <meta name="theme-color" content="#0a0908" media="(prefers-color-scheme: dark)">
-    <meta name="theme-color" content="#faf9f6" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#ffffff">
     <link rel="canonical" href="https://akash1764591.github.io/blog/four-rules-token-compression/">
 
     <meta property="og:title" content="Four Decisions Behind a Token Compressor">
@@ -22,14 +21,17 @@
     <link rel="icon" type="image/svg+xml" href="../../images/favicon.svg?v=6">
     <link rel="preload" href="../../fonts/geist-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="stylesheet" href="../../styles.css">
+    <script>try { if (localStorage.getItem('site-theme') === 'dark') { document.documentElement.classList.replace('orbital-light', 'orbital-dark'); } } catch (_) {}</script>
     <script>document.documentElement.classList.add('motion-ready');</script>
 </head>
 
 <body>
     <a class="skip-link" href="#article">skip to article</a>
+    <canvas class="orbital-field" aria-hidden="true"></canvas>
 
     <nav class="article-nav" aria-label="blog navigation">
         <a href="../../">← home</a>
+        <button class="theme-toggle" type="button" aria-label="switch to dark theme">dark</button>
     </nav>
 
     <main class="article-main" id="article">
@@ -39,11 +41,11 @@
         </header>
 
         <article class="article-body">
-            <p class="intro">a test run prints 200 passes and one failed assertion. the agent needs the failure, not the 200 green lines. where can we remove those lines without hiding the cause? <a href="https://github.com/rtk-ai/rtk" target="_blank" rel="noopener noreferrer">RTK</a> and <a href="https://github.com/headroomlabs-ai/headroom" target="_blank" rel="noopener noreferrer">Headroom</a> answer at different points in the same trip from command to model.</p>
+            <p class="intro"><a href="https://github.com/rtk-ai/rtk#examples" target="_blank" rel="noopener noreferrer">RTK's examples</a> make an odd pair: a 200-line failed test log can lose its passing cases while keeping the failures, but a two-line <a href="https://github.com/rtk-ai/rtk/issues/2673" target="_blank" rel="noopener noreferrer">git push result</a> can lose the repository destination that gave it meaning. a useful compressor has to preserve the evidence for the agent's next decision. <a href="https://github.com/rtk-ai/rtk" target="_blank" rel="noopener noreferrer">RTK</a> and <a href="https://github.com/headroomlabs-ai/headroom" target="_blank" rel="noopener noreferrer">Headroom</a> approach that choice with different information in hand.</p>
 
-            <h2>1. at the shell</h2>
+            <h2>1. use the command while you have it</h2>
 
-            <p>RTK runs in front of a shell command. its <a href="https://github.com/rtk-ai/rtk#quick-start" target="_blank" rel="noopener noreferrer">Bash hook</a> can change <code class="terminal-command">git status</code> to <code class="terminal-command">rtk git status</code> before the command runs. because RTK knows the command, it can group status files, trim a diff, or collapse passing tests while keeping failures. it also <a href="https://github.com/rtk-ai/rtk/blob/develop/docs/contributing/ARCHITECTURE.md#design-principles" target="_blank" rel="noopener noreferrer">preserves the exit code</a>. a short failure remains a failure.</p>
+            <p>RTK's <a href="https://github.com/rtk-ai/rtk#quick-start" target="_blank" rel="noopener noreferrer">Bash hook</a> can rewrite a supported command before it runs. for a test command, the command itself is useful context: <code class="terminal-command">rtk test cargo test</code> collapses passing cases while keeping failure details. the wrapper also <a href="https://github.com/rtk-ai/rtk/blob/develop/docs/contributing/ARCHITECTURE.md#design-principles" target="_blank" rel="noopener noreferrer">preserves the exit code</a>. a short failure must still be a failure.</p>
 
             <figure class="output-example">
                 <pre class="terminal-output"><code>$ rtk test cargo test
@@ -53,22 +55,22 @@ test_overflow: panic at utils.rs:18</code></pre>
                 <figcaption>schematic output from <a href="https://github.com/rtk-ai/rtk#examples" target="_blank" rel="noopener noreferrer">RTK's test example</a>: passing lines collapse; failure details remain.</figcaption>
             </figure>
 
-            <p>the hook only sees shell commands. an agent's built-in Read or Grep tool bypasses it. RTK can also cut too far: an <a href="https://github.com/rtk-ai/rtk/issues/2673" target="_blank" rel="noopener noreferrer">open proposal</a> shows a two-line <code class="terminal-command">git push origin main</code> result losing the destination repository. if you needed to check where the code went, that line was the answer.</p>
+            <p>the command is a clue, not a guarantee. an agent's built-in Read or Grep call never passes through the shell hook. an <a href="https://github.com/rtk-ai/rtk/issues/2673" target="_blank" rel="noopener noreferrer">open RTK proposal</a> shows a two-line <code class="terminal-command">git push origin main</code> result losing its destination repository after compression. the raw output was already short. token count alone would have called that a win.</p>
 
-            <h2>2. before the model</h2>
+            <h2>2. work with the content you actually have</h2>
 
-            <p>the agent then sends tool results and file reads to the model. Headroom's <a href="https://docs.headroomlabs.ai/docs/architecture" target="_blank" rel="noopener noreferrer">proxy or SDK</a> works at this boundary. it compresses eligible parts of the request without dropping or reordering messages. unlike RTK, it sees the content but may not know which shell command produced it.</p>
+            <p>Headroom's <a href="https://docs.headroomlabs.ai/docs/architecture" target="_blank" rel="noopener noreferrer">proxy or SDK</a> sees the assembled request to the model. that includes file reads and tool results that never reached RTK's Bash hook. the request may not say which shell command produced a block, so Headroom has to recognize what is in it.</p>
 
-            <p>its <a href="https://docs.headroomlabs.ai/docs/architecture#contentrouter" target="_blank" rel="noopener noreferrer">ContentRouter</a> sends logs to a filter that keeps errors and stack traces. JSON arrays go to <a href="https://docs.headroomlabs.ai/docs/smart-crusher" target="_blank" rel="noopener noreferrer">SmartCrusher</a>: first it tries a compact table with every item; if that saves too little, it selects items such as errors and query matches. <a href="https://docs.headroomlabs.ai/docs/architecture#what-headroom-does-not-rewrite" target="_blank" rel="noopener noreferrer">short blocks pass through</a>.</p>
+            <p><a href="https://docs.headroomlabs.ai/docs/architecture#contentrouter" target="_blank" rel="noopener noreferrer">ContentRouter</a> routes logs to a filter that keeps errors and stack traces. for JSON arrays, <a href="https://docs.headroomlabs.ai/docs/smart-crusher" target="_blank" rel="noopener noreferrer">SmartCrusher</a> first tries a compact table with every item; if that saves too little, it selects items such as errors and query matches. <a href="https://docs.headroomlabs.ai/docs/architecture#what-headroom-does-not-rewrite" target="_blank" rel="noopener noreferrer">short blocks pass through</a>. eligible content changes inside a message; the messages themselves stay in order.</p>
 
-            <h2>3. when a line is missing</h2>
+            <h2>3. keep the omitted lines reachable</h2>
 
-            <p>even a good filter can miss what the agent needs next. RTK's <a href="https://github.com/rtk-ai/rtk/blob/develop/docs/guide/getting-started/configuration.md#recall-system" target="_blank" rel="noopener noreferrer">recall system</a> saves full output for failed or trimmed commands. <code class="terminal-command">rtk recall &lt;hash&gt;</code> reads it without rerunning the command; <code class="terminal-command">rtk proxy &lt;command&gt;</code> skips filtering up front. Headroom's <a href="https://docs.headroomlabs.ai/docs/ccr" target="_blank" rel="noopener noreferrer">Compress-Cache-Retrieve</a> keeps the original block locally and leaves a marker. the model can use <code>headroom_retrieve</code> to fetch it before it expires.</p>
+            <p>the failure line may be enough for the first fix. if it is not, rerunning the test just to retrieve context is wasteful. RTK's <a href="https://github.com/rtk-ai/rtk/blob/develop/docs/contributing/TECHNICAL.md#37-output-recovery-recall-store" target="_blank" rel="noopener noreferrer">recall system</a> saves full output for failed or trimmed commands. <code class="terminal-command">rtk recall &lt;hash&gt;</code> reads it without rerunning the command; <code class="terminal-command">rtk proxy &lt;command&gt;</code> skips filtering up front. in <a href="https://github.com/headroomlabs-ai/headroom/blob/main/docs/content/docs/ccr.mdx#retrieving-originals" target="_blank" rel="noopener noreferrer">Headroom's proxy mode</a>, Compress-Cache-Retrieve stores the original block under a hash and lets the model fetch it with <code>headroom_retrieve</code> before it expires. the direct SDK stores the original too, but leaves retrieval wiring to the application.</p>
 
             <figure>
                 <svg class="diagram" viewBox="0 0 650 242" role="img" aria-labelledby="ccr-title ccr-desc">
-                    <title id="ccr-title">Headroom's compress, cache, retrieve path</title>
-                    <desc id="ccr-desc">One tool result becomes a short version with a hash marker for the model and a full original saved locally. If the model needs more detail, it calls headroom_retrieve with that hash, and the full result returns from the local store.</desc>
+                    <title id="ccr-title">Headroom proxy's compress, cache, retrieve path</title>
+                    <desc id="ccr-desc">In proxy mode, one tool result becomes a short version with a hash marker for the model and a full original saved locally. If the model needs more detail, it calls headroom_retrieve with that hash, and the full result returns from the local store.</desc>
                     <text class="muted" x="20" y="23" font-size="11">one result, two versions</text>
                     <rect class="accent-node" x="20" y="38" width="270" height="62" rx="2"></rect>
                     <text class="ink" x="38" y="65" font-size="12.5">short result</text>
@@ -90,14 +92,14 @@ test_overflow: panic at utils.rs:18</code></pre>
                     <path class="accent-line" d="M495 100 V162"></path>
                     <path class="accent-line" d="M490 154 L495 162 L500 154"></path>
                 </svg>
-                <figcaption>the hash connects the short view to the saved original.</figcaption>
+                <figcaption>through the proxy, the short result points back to the full original.</figcaption>
             </figure>
 
-            <p><a href="https://github.com/redhat-et/ripwire" target="_blank" rel="noopener noreferrer">Red Hat's Ripwire</a> makes a similar trade for source code: show a map of relevant functions and locations, then expand the full code if needed. it advises <a href="https://github.com/redhat-et/ripwire#where-it-pays-most-and-where-it-does-not" target="_blank" rel="noopener noreferrer">skipping the map</a> when one <code>grep</code> is enough.</p>
+            <p>the same rule applies to source code. <a href="https://github.com/redhat-et/ripwire" target="_blank" rel="noopener noreferrer">Red Hat's Ripwire</a> shows a map first and expands the full code on demand; its own guidance says to <a href="https://github.com/redhat-et/ripwire#where-it-pays-most-and-where-it-does-not" target="_blank" rel="noopener noreferrer">skip the map</a> when one <code>grep</code> would do.</p>
 
-            <h2>4. on the next request</h2>
+            <h2>4. leave the cached prefix alone</h2>
 
-            <p>the model can <a href="https://platform.claude.com/docs/en/build-with-claude/prompt-caching" target="_blank" rel="noopener noreferrer">cache the unchanged start</a> of a request, including earlier messages. rewrite an old message and that match breaks. fewer tokens can still cost more if a cheap cache read becomes a new write.</p>
+            <p>a provider can <a href="https://platform.claude.com/docs/en/build-with-claude/prompt-caching" target="_blank" rel="noopener noreferrer">reuse an unchanged prefix</a> of the next request. rewrite an old message to shave off a few tokens and the match breaks at that point. the shorter request may cost more because a cheap cache read became fresh processing.</p>
 
             <figure>
                 <svg class="diagram" viewBox="0 0 650 232" role="img" aria-labelledby="prefix-title prefix-desc">
@@ -120,13 +122,14 @@ test_overflow: panic at utils.rs:18</code></pre>
                     <text class="muted" x="448" y="198" font-size="10.5">processed as usual</text>
                     <path class="accent-line" d="M418 184 H430"></path>
                 </svg>
-                <figcaption>shrinking an old message can erase a cheaper cached read of that same message.</figcaption>
+                <figcaption>shrinking an old message can turn a cache read into fresh processing.</figcaption>
             </figure>
 
-            <p>Headroom's default <a href="https://docs.headroomlabs.ai/docs/architecture#compression-modes-and-provider-caches" target="_blank" rel="noopener noreferrer">cache mode</a> cuts new content and leaves earlier turns alone. RTK filters command output once, before it enters the conversation. for the failed test, the agent sees the assertion now, can fetch the full log later, and keeps old messages unchanged for the next call.</p>
+            <p>Headroom's default <a href="https://docs.headroomlabs.ai/docs/architecture#compression-modes-and-provider-caches" target="_blank" rel="noopener noreferrer">cache mode</a> leaves earlier turns alone and compresses only new content. RTK filters shell output before it enters the conversation. for the failed test, the useful rule is concrete: keep the assertion, keep a path back to the full log, and leave the cached prefix untouched on the next call.</p>
         </article>
     </main>
 
     <script src="../../interactions.js" defer></script>
+    <script src="../../orbital-background.js" defer></script>
 </body>
 </html>

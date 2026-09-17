@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en" class="orbital-light article-page">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>How OpenCode's Coding Harness Works · S Akash</title>
+    <meta name="author" content="S Akash">
+    <meta name="description" content="A source-level guide to coding harness design through OpenCode: context, tools, plugins, hooks, MCP, browser, permissions, subagents, and persistence.">
+    <meta name="theme-color" content="#ffffff">
+    <link rel="canonical" href="https://akash1764591.github.io/blog/how-opencode-v2-works/">
+    <meta property="og:title" content="How OpenCode's Coding Harness Works">
+    <meta property="og:description" content="How a coding harness is assembled, where OpenCode draws its boundaries, and how other harnesses make different choices.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://akash1764591.github.io/blog/how-opencode-v2-works/">
+    <meta property="article:published_time" content="2026-09-17">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="How OpenCode's Coding Harness Works">
+    <meta name="twitter:description" content="A source-level guide to context, tools, plugins, hooks, MCP, browser, permissions, subagents, and state in a coding harness.">
+    <link rel="icon" type="image/svg+xml" href="../../images/favicon.svg?v=6">
+    <link rel="preload" href="../../fonts/geist-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="stylesheet" href="../../styles.css">
+    <style>
+        .article-body .diagram .muted { fill: var(--body); }
+        .article-body .diagram-strong text { font-size: 12px; }
+        .article-body .diagram-strong .ink { font-size: 13px; font-weight: 500; }
+        .article-body .diagram-strong .muted { font-size: 12px; fill: var(--muted); }
+        .article-body .mechanism-list { max-width: 620px; margin: -4px 0 22px; padding-left: 21px; }
+        .article-body .mechanism-list li { margin: 0 0 8px; padding-left: 4px; }
+        .article-body p code:not(.terminal-command),
+        .article-body figcaption code {
+            font: 500 .88em/1.25 ui-monospace, SFMono-Regular, Consolas, monospace;
+            letter-spacing: -.015em;
+            color: var(--body-strong);
+            background: var(--surface-2);
+            border-radius: 3px;
+            padding: .08em .25em;
+        }
+        .article-body .source-note { color: var(--muted); font-size: 14px; }
+        .article-body .source-note code { font-size: .94em; }
+        @media (max-width: 680px) { .article-body .diagram { min-width: 650px; } }
+    </style>
+    <script>try { if (localStorage.getItem('site-theme') === 'dark') { document.documentElement.classList.replace('orbital-light', 'orbital-dark'); } } catch (_) {}</script>
+    <script>document.documentElement.classList.add('motion-ready');</script>
+</head>
+<body>
+    <a class="skip-link" href="#article">skip to article</a>
+    <canvas class="orbital-field" aria-hidden="true"></canvas>
+    <nav class="article-nav" aria-label="blog navigation">
+        <a href="../../">← home</a>
+        <button class="theme-toggle" type="button" aria-label="switch to dark theme">dark</button>
+    </nav>
+    <main class="article-main" id="article">
+        <header class="article-head">
+            <h1 class="article-title">how opencode's coding harness works</h1>
+            <div class="article-meta">S Akash · september 17, 2026 · 12 min read</div>
+        </header>
+        <article class="article-body">
+            <p class="intro">a coding harness builds each model request from a larger, changing session. it decides which actions to advertise, runs the ones the model selects, and records enough state to continue. OpenCode is a useful case because its <a href="https://github.com/anomalyco/opencode/tree/7689c3654ed979ca70c838383a518bfb761645ca" target="_blank" rel="noopener noreferrer">source is open</a>. the interesting questions are at the crossings: what reaches the model, what a tool can actually affect, and what happens when work is delegated or interrupted.</p>
+
+            <h2>1. context: what is the model allowed to see?</h2>
+
+            <p>start with three kinds of state. <strong>session state</strong> is the durable record of messages and tool results, together with related job state. <strong>working context</strong> is the subset assembled for one model step. <strong>workspace state</strong> is the actual filesystem, processes, and browser tabs. the harness has to move information among them deliberately. a conversation transcript alone cannot tell you which instructions, tools, or files were visible when a decision was made.</p>
+
+            <p>before each model step, OpenCode <a href="https://github.com/anomalyco/opencode/blob/7689c3654ed979ca70c838383a518bfb761645ca/packages/core/src/session/context.ts" target="_blank" rel="noopener noreferrer">selects a view</a>: the active part of history, instructions for this location and agent, and the tool definitions that this request may advertise. the <a href="https://github.com/anomalyco/opencode/blob/7689c3654ed979ca70c838383a518bfb761645ca/packages/core/src/session/model-request.ts" target="_blank" rel="noopener noreferrer">request builder</a> turns that view into messages and schemas for the model. the model does not read the session database or workspace directly; a later tool call is how it asks the harness to observe or change them.</p>
+
+            <figure>
+                <svg class="diagram diagram-strong" viewBox="0 0 650 277" role="img" aria-labelledby="request-title request-desc">
+                    <title id="request-title">How a model view is prepared, including later instructions</title>
+                    <desc id="request-desc">For one model step, OpenCode selects agent and location, loads active history, combines instructions and admitted tool definitions, applies request hooks, and sends messages and schemas to the model. A later file read or skill load can discover new instruction text. That text enters durable state and can affect the next request, not the request that preceded its discovery.</desc>
+                    <defs><marker id="context-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0 L7 3.5 L0 7 Z" fill="var(--ink)"></path></marker></defs>
+                    <text class="muted" x="20" y="19">one request</text>
+                    <rect class="node" x="20" y="37" width="139" height="66" rx="8"></rect>
+                    <text class="ink" x="89" y="62" text-anchor="middle">select scope</text>
+                    <text class="muted" x="89" y="83" text-anchor="middle">agent + location</text>
+                    <rect class="node" x="177" y="37" width="139" height="66" rx="8"></rect>
+                    <text class="ink" x="246" y="62" text-anchor="middle">load history</text>
+                    <text class="muted" x="246" y="83" text-anchor="middle">active messages</text>
+                    <rect class="node" x="334" y="37" width="139" height="66" rx="8"></rect>
+                    <text class="ink" x="403" y="62" text-anchor="middle">prepare request</text>
+                    <text class="muted" x="403" y="83" text-anchor="middle">rules + tools + hooks</text>
+                    <rect class="accent-node" x="491" y="37" width="139" height="66" rx="8"></rect>
+                    <text class="ink" x="560" y="62" text-anchor="middle">model step</text>
+                    <text class="muted" x="560" y="83" text-anchor="middle">messages + schemas</text>
+                    <path class="accent-line" d="M159 70 H172" marker-end="url(#context-arrow)"></path>
+                    <path class="accent-line" d="M316 70 H329" marker-end="url(#context-arrow)"></path>
+                    <path class="accent-line" d="M473 70 H486" marker-end="url(#context-arrow)"></path>
+                    <text class="muted" x="20" y="140">what happens after that request can change the next one</text>
+                    <rect class="node" x="20" y="157" width="245" height="67" rx="8"></rect>
+                    <text class="ink" x="142" y="182" text-anchor="middle">read file or load skill</text>
+                    <text class="muted" x="142" y="203" text-anchor="middle">may reveal new guidance</text>
+                    <rect class="node" x="306" y="157" width="324" height="67" rx="8"></rect>
+                    <text class="ink" x="468" y="182" text-anchor="middle">record instruction change</text>
+                    <text class="muted" x="468" y="203" text-anchor="middle">eligible for the next request</text>
+                    <path class="accent-line" d="M265 190 H301" marker-end="url(#context-arrow)"></path>
+                    <path class="line dashed" d="M560 103 V123 H142 V152" marker-end="url(#context-arrow)"></path>
+                    <text class="muted" x="20" y="259">later guidance cannot retroactively affect an earlier tool choice</text>
+                </svg>
+                <figcaption>context is prepared for a particular step. discovered instructions take effect later; their place in history matters. <a href="https://github.com/anomalyco/opencode/blob/7689c3654ed979ca70c838383a518bfb761645ca/packages/core/src/session/context.ts" target="_blank" rel="noopener noreferrer">selection</a> · <a href="https://github.com/anomalyco/opencode/blob/7689c3654ed979ca70c838383a518bfb761645ca/packages/core/src/session/model-request.ts" target="_blank" rel="noopener noreferrer">request preparation</a></figcaption>
+            </figure>
+
+            <p>instructions also have different activation points. built-in guidance and project rules can enter up front. <a href="https://github.com/anomalyco/opencode/blob/7689c3654ed979ca70c838383a518bfb761645ca/packages/core/src/skill/instructions.ts" target="_blank" rel="noopener noreferrer">skill descriptions</a> advertise bodies that are loaded on demand. a successful <a href="https://github.com/anomalyco/opencode/blob/7689c3654ed979ca70c838383a518bfb761645ca/packages/core/src/tool/plugin/read.ts" target="_blank" rel="noopener noreferrer">file read</a> can discover a nearby <code>AGENTS.md</code> and insert it as a later synthetic instruction. <a href="https://github.com/anomalyco/opencode/blob/7689c3654ed979ca70c838383a518bfb761645ca/packages/core/src/mcp/instructions.ts" target="_blank" rel="noopener noreferrer">MCP server guidance</a> is filtered against the agent's permissions and available server tools; session-level restrictions enter the separate tool snapshot, so guidance and executable availability can diverge. an input hook can alter a prompt before admission; a context hook can alter the outgoing view without rewriting stored history. a context hook may rename or describe an admitted tool, but the <a href="https://github.com/anomalyco/opencode/blob/7689c3654ed979ca70c838383a518bfb761645ca/packages/core/src/session/model-request.ts" target="_blank" rel="noopener noreferrer">request builder</a> drops invented tool definitions and maps surviving renames back to the original executable handler.</p>
+
+            <p>the timing is easy to miss. a rule discovered on a file read cannot have influenced an earlier edit; a skill whose description was visible is not the same as its body having been loaded. OpenCode <a href="https://github.com/anomalyco/opencode/blob/7689c3654ed979ca70c838383a518bfb761645ca/packages/core/src/session/instruction-state.ts" target="_blank" rel="noopener noreferrer">hashes instruction sources and records changes</a> durably, freezing the rendered update text at that point. compaction advances the instruction baseline. this gives late guidance a position in history instead of pretending every rule was present from the first turn. <a href="https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents" target="_blank" rel="noopener noreferrer">Anthropic’s context engineering notes</a> make the broader case for selective context; here the selection point is part of the behavior.</p>
+
+            <h2>2. tools: the action space is an API</h2>
+
+            <p>OpenCode <a href="https://github.com/anomalyco/opencode/blob/7689c3654ed979ca70c838383a518bfb761645ca/packages/core/src/tool.ts" target="_blank" rel="noopener noreferrer">builds a tool snapshot</a> for each request from built-in tools, plugins, and connected MCP servers. it removes wholly denied actions before advertising them. read, edit, shell, and subagent have individual model-facing schemas; other eligible operations are discoverable through a compact catalog. either way, the model sees an advertised interface, not the handler's full authority.</p>
+
+            <figure>
+                <svg class="diagram diagram-strong" viewBox="0 0 650 348" role="img" aria-labelledby="tools-title tools-desc">
+                    <title id="tools-title">From installed capability to one model observation</title>
+                    <desc id="tools-desc">Built-in tools, plugin tools, and MCP tools feed a registry. The registry filters what the selected agent may see and prepares descriptions for a model request. The model chooses a call. Built-in and MCP handlers check relevant actions and resources; custom plugin tools need their own checks. The call runs in an execution environment and returns an observation to the session.</desc>
+                    <defs><marker id="tools-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0 L7 3.5 L0 7 Z" fill="var(--ink)"></path></marker></defs>
+                    <text class="muted" x="20" y="19">install / connect</text>
+                    <rect class="node" x="20" y="35" width="190" height="43" rx="8"></rect>
+                    <text class="ink" x="115" y="62" text-anchor="middle">built-in tools</text>
+                    <rect class="node" x="230" y="35" width="190" height="43" rx="8"></rect>
+                    <text class="ink" x="325" y="62" text-anchor="middle">plugin tools</text>
+                    <rect class="node" x="440" y="35" width="190" height="43" rx="8"></rect>
+                    <text class="ink" x="535" y="62" text-anchor="middle">MCP tools</text>
+                    <path class="line" d="M115 78 V96 H325 M325 78 V96 M535 78 V96 H325"></path>
+                    <path class="accent-line" d="M325 96 V107" marker-end="url(#tools-arrow)"></path>
+                    <rect class="accent-node" x="145" y="112" width="360" height="53" rx="8"></rect>
+                    <text class="ink" x="325" y="133" text-anchor="middle">compile the advertised action space</text>
+                    <text class="muted" x="325" y="151" text-anchor="middle">agent eligibility + visible permissions + descriptions</text>
+                    <path class="accent-line" d="M325 165 V185" marker-end="url(#tools-arrow)"></path>
+                    <rect class="node" x="145" y="188" width="360" height="50" rx="8"></rect>
+                    <text class="ink" x="325" y="209" text-anchor="middle">model selects a call</text>
+                    <text class="muted" x="325" y="227" text-anchor="middle">advertised schema or discovered operation</text>
+                    <path class="accent-line" d="M325 238 V257" marker-end="url(#tools-arrow)"></path>
+                    <rect class="accent-node" x="20" y="260" width="292" height="61" rx="8"></rect>
+                    <text class="ink" x="166" y="282" text-anchor="middle">handler checks the proposed effect</text>
+                    <text class="muted" x="166" y="302" text-anchor="middle">custom tools must supply their own checks</text>
+                    <path class="accent-line" d="M312 290 H333" marker-end="url(#tools-arrow)"></path>
+                    <rect class="node" x="338" y="260" width="292" height="61" rx="8"></rect>
+                    <text class="ink" x="484" y="282" text-anchor="middle">normalize and record result</text>
+                    <text class="muted" x="484" y="302" text-anchor="middle">observation for a later model step</text>
+                    <text class="muted" x="20" y="341">a visible tool description is not permission to execute it</text>
+                </svg>
+                <figcaption>the registry controls what is advertised; the handler and execution environment control what a selected call can do. <a href="https://github.com/anomalyco/opencode/blob/7689c3654ed979ca70c838383a518bfb761645ca/packages/core/src/tool.ts" target="_blank" rel="noopener noreferrer">registry and call path</a></figcaption>
+            </figure>
+
+            <p>in OpenCode, that catalog is exposed through <a href="https://github.com/anomalyco/opencode/blob/7689c3654ed979ca70c838383a518bfb761645ca/packages/core/src/codemode/tool.ts" target="_blank" rel="noopener noreferrer">Code Mode</a>: a short JavaScript program can call registered tools and return selected results, reducing tool-description and observation volume. registered calls still reach their normal handlers. the interpreter's built-in <code>fetch</code> is a separate HTTP capability, however, and needs its own network policy. <a href="https://www.anthropic.com/engineering/code-execution-with-mcp" target="_blank" rel="noopener noreferrer">Anthropic</a> explains the general context-saving pattern.</p>
+
+            <p>the returned observation is another design choice. OpenCode <a href="https://github.com/anomalyco/opencode/blob/7689c3654ed979ca70c838383a518bfb761645ca/packages/core/src/tool.ts" target="_blank" rel="noopener noreferrer">normalizes tool content</a>, runs an after hook, and caps ordinary local text at <a href="https://github.com/anomalyco/opencode/blob/7689c3654ed979ca70c838383a518bfb761645ca/packages/core/src/tool-output.ts" target="_blank" rel="noopener noreferrer">2,000 lines or 50 KiB</a>. when truncated, the full text goes to a temporary file with a seven-day cleanup policy. the model gets a bounded response and can retrieve more while that file exists. <a href="https://cursor.com/blog/dynamic-context-discovery" target="_blank" rel="noopener noreferrer">Cursor</a> applies a similar file approach to long shell and MCP responses and terminal history. the mechanism matters more than the exact cap: how can the agent recover evidence left out of the current observation?</p>
+
+            <p>other harnesses place discovery elsewhere. <a href="https://cursor.com/blog/dynamic-context-discovery" target="_blank" rel="noopener noreferrer">Cursor</a> keeps MCP tool descriptions in a folder per server and lets the agent search definitions as needed. <a href="https://github.com/PrimeIntellect-ai/prime-agent/blob/main/packages/coding-agent/docs/rlm.md" target="_blank" rel="noopener noreferrer">Prime Agent</a> offers a persistent Python namespace that can inspect values and call host tools across turns; that worker has OS access and is not a sandbox. these choices change how the model finds and combines operations. each still needs an answer to what the operation is allowed to affect.</p>
+
+            <h2>3. plugins, hooks, MCP: three different boundaries</h2>
+
+            <p><strong>a plugin is host-side code.</strong> OpenCode <a href="https://github.com/anomalyco/opencode/blob/7689c3654ed979ca70c838383a518bfb761645ca/packages/core/src/plugin.ts" target="_blank" rel="noopener noreferrer">activates it inside the host</a> and gives it a <a href="https://github.com/anomalyco/opencode/blob/7689c3654ed979ca70c838383a518bfb761645ca/packages/core/src/plugin/host.ts" target="_blank" rel="noopener noreferrer">context</a> with registration APIs. the plugin can add a local tool through <code>tool.transform</code>, register a callback through <code>tool.hook</code> or <code>session.hook</code>, and even add an MCP server configuration through <code>mcp.transform</code>. these are different actions by the same plugin, not synonyms for a plugin. its setup runs in the host, so the plugin's own code needs the trust you would give other installed code.</p>
+
+            <p><strong>a hook is a named point in that host's lifecycle.</strong> for example, OpenCode calls <code>session.context</code> while building a model request and <code>tool.execute.before</code> before running an admitted tool. a plugin registers the callback; the hook fires only at its particular point and receives that point's event data. <a href="https://github.com/anomalyco/opencode/blob/7689c3654ed979ca70c838383a518bfb761645ca/packages/core/src/plugin/hooks.ts" target="_blank" rel="noopener noreferrer">callbacks run in registration order</a>. their powers differ: <code>tool.execute.before</code> can reject a call, while the other hook events have no typed rejection channel. hooks are therefore control surfaces inside the host, not a protocol for talking to another service.</p>
+
+            <p><strong>an MCP server is a separate capability endpoint.</strong> OpenCode talks to one over stdio or HTTP, discovers what it offers, and adapts those capabilities into the harness. an MCP tool is still subject to the host's wrapper and permission path; the server does not gain a <code>session.context</code> hook merely by connecting. the distinction is useful when building your own harness: use a local tool for a trusted operation tightly coupled to host state, a hook to alter a known lifecycle point, and an MCP adapter when a capability should be supplied through a separate process or service. a plugin can wire up all three.</p>
+
+            <p>follow one tool call. suppose an MCP server named <code>docs</code> advertises <code>search</code>. the model selects that operation and supplies a query. the host runs the tool's before hook, validates the input, and checks action <code>docs_search</code> with resource <code>*</code>. only then does the MCP adapter send the request to the server. on return it converts the response, runs the after hook, and records a result the next model step can observe.</p>
+
+            <figure>
+                <svg class="diagram diagram-strong" viewBox="0 0 650 300" role="img" aria-labelledby="mcp-flow-title mcp-flow-desc">
+                    <title id="mcp-flow-title">What happens when an MCP tool is called</title>
+                    <desc id="mcp-flow-desc">A model selects an advertised search tool. The host runs a before hook, decodes input, and checks the server-qualified permission. A separate MCP server executes search. The host converts the result, runs an after hook, records an observation, and supplies it on the next model step. A plugin can register host-side hooks or tools; the MCP server is a separate process or service.</desc>
+                    <defs><marker id="mcp-flow-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0 L7 3.5 L0 7 Z" fill="var(--ink)"></path></marker></defs>
+                    <rect x="151" y="25" width="342" height="222" rx="10" fill="var(--surface-2)" opacity=".62"></rect>
+                    <text class="muted" x="18" y="17">model</text>
+                    <text class="muted" x="167" y="17">OpenCode host</text>
+                    <text class="muted" x="516" y="17">MCP server</text>
+                    <rect class="node" x="18" y="55" width="115" height="58" rx="8"></rect>
+                    <text class="ink" x="75" y="78" text-anchor="middle">search(query)</text>
+                    <text class="muted" x="75" y="97" text-anchor="middle">selected call</text>
+                    <rect class="node" x="169" y="55" width="140" height="58" rx="8"></rect>
+                    <text class="ink" x="239" y="78" text-anchor="middle">before hook</text>
+                    <text class="muted" x="239" y="97" text-anchor="middle">decode input</text>
+                    <rect class="node" x="333" y="55" width="140" height="58" rx="8"></rect>
+                    <text class="ink" x="403" y="78" text-anchor="middle">permission check</text>
+                    <text class="muted" x="403" y="97" text-anchor="middle">docs_search / *</text>
+                    <rect class="accent-node" x="517" y="55" width="115" height="58" rx="8"></rect>
+                    <text class="ink" x="574" y="78" text-anchor="middle">search</text>
+                    <text class="muted" x="574" y="97" text-anchor="middle">server executes</text>
+                    <path class="accent-line" d="M133 84 H164" marker-end="url(#mcp-flow-arrow)"></path>
+                    <path class="accent-line" d="M309 84 H328" marker-end="url(#mcp-flow-arrow)"></path>
+                    <path class="accent-line" d="M473 84 H512" marker-end="url(#mcp-flow-arrow)"></path>
+                    <text class="muted" x="18" y="142">the result takes the return path</text>
+                    <rect class="node" x="517" y="160" width="115" height="60" rx="8"></rect>
+                    <text class="ink" x="574" y="184" text-anchor="middle">result</text>
+                    <text class="muted" x="574" y="202" text-anchor="middle">text / structured</text>
+                    <rect class="node" x="333" y="160" width="140" height="60" rx="8"></rect>
+                    <text class="ink" x="403" y="184" text-anchor="middle">convert result</text>
+                    <text class="muted" x="403" y="202" text-anchor="middle">after hook</text>
+                    <rect class="node" x="169" y="160" width="140" height="60" rx="8"></rect>
+                    <text class="ink" x="239" y="184" text-anchor="middle">record result</text>
+                    <text class="muted" x="239" y="202" text-anchor="middle">session state</text>
+                    <rect class="accent-node" x="18" y="160" width="115" height="60" rx="8"></rect>
+                    <text class="ink" x="75" y="184" text-anchor="middle">observation</text>
+                    <text class="muted" x="75" y="202" text-anchor="middle">next model step</text>
+                    <path class="accent-line" d="M517 190 H478" marker-end="url(#mcp-flow-arrow)"></path>
+                    <path class="accent-line" d="M333 190 H314" marker-end="url(#mcp-flow-arrow)"></path>
+                    <path class="accent-line" d="M169 190 H138" marker-end="url(#mcp-flow-arrow)"></path>
+                    <text class="muted" x="168" y="240">plugins register host-side hooks and tools; they are not the server</text>
+                    <text class="muted" x="18" y="284">the server can perform remote effects; the host controls admission and observation</text>
+                </svg>
+                <figcaption>the MCP server supplies the operation. the host decides how to intercept, authorize, and return it.</figcaption>
+            </figure>
+
+            <p>the MCP connection itself is only transport and discovery. OpenCode <a href="https://github.com/anomalyco/opencode/blob/7689c3654ed979ca70c838383a518bfb761645ca/packages/core/src/mcp/client.ts" target="_blank" rel="noopener noreferrer">connects</a> over stdio or Streamable HTTP and <a href="https://github.com/anomalyco/opencode/blob/7689c3654ed979ca70c838383a518bfb761645ca/packages/core/src/mcp/index.ts" target="_blank" rel="noopener noreferrer">maps four kinds of contribution</a> into different host surfaces:</p>
+            <ul class="mechanism-list">
+                <li><strong>tools</strong> become callable, namespaced operations; a changed tool list <a href="https://github.com/anomalyco/opencode/blob/7689c3654ed979ca70c838383a518bfb761645ca/packages/core/src/tool/mcp.ts" target="_blank" rel="noopener noreferrer">refreshes the registry</a>.</li>
+                <li><strong>prompts</strong> become <a href="https://github.com/anomalyco/opencode/blob/7689c3654ed979ca70c838383a518bfb761645ca/packages/core/src/plugin/command.ts" target="_blank" rel="noopener noreferrer">explicit commands</a> that fetch server messages when invoked.</li>
+                <li><strong>resources</strong> have list and read operations; connecting a server does not inject every resource into context.</li>
+                <li><strong>server instructions</strong> can enter context when the server is reachable and relevant tools are permitted.</li>
+            </ul>
+
+            <p>the <a href="https://github.com/anomalyco/opencode/blob/7689c3654ed979ca70c838383a518bfb761645ca/packages/core/src/tool/mcp.ts" target="_blank" rel="noopener noreferrer">adapter</a> also decides what a result means to the harness: it preserves structured output, converts text and media, and parses JSON-looking text when no output schema is declared. this happens after the remote call, before the model sees the observation. server schemas and <a href="https://blog.modelcontextprotocol.io/posts/2026-03-16-tool-annotations/" target="_blank" rel="noopener noreferrer">annotations</a> describe behavior; they are untrusted hints, not the host's authorization policy. returned documents and page text remain untrusted data.</p>
+
+            <p>connection health is part of the harness too. OpenCode starts configured servers asynchronously, marks a connection usable after tool discovery succeeds, and updates the registry when tools change. for a tagged expired HTTP session, its <a href="https://github.com/anomalyco/opencode/blob/7689c3654ed979ca70c838383a518bfb761645ca/packages/core/src/mcp/index.ts" target="_blank" rel="noopener noreferrer">recovery path</a> reconnects and runs the original request once more. that is more than refreshing the catalog: for an effectful MCP tool, the host cannot infer from a lost response whether the first attempt acted. a missing tool, meanwhile, may mean startup, catalog drift, or authentication failure rather than a model selection error.</p>
+
+            <p>this adapter design leaves two separate questions. <em>discovery:</em> can the agent find the right capability without advertising hundreds of schemas? <em>authority:</em> what exactly does the host restrict? OpenCode checks the server-qualified tool name, but passes a wildcard resource to that permission check; it does not inspect the tool's arguments to authorize a particular remote object. <a href="https://www.anthropic.com/engineering/code-execution-with-mcp" target="_blank" rel="noopener noreferrer">Anthropic’s MCP code-execution essay</a> is useful on discovery. it does not settle authority: a searchable catalog can make a dangerous operation easier to find, and a server's “read-only” annotation does not constrain what its implementation can do.</p>
+
+            <h2>4. browser: desktop execution, server network</h2>
+
+            <p>in this snapshot OpenCode includes an <a href="https://github.com/anomalyco/opencode/blob/7689c3654ed979ca70c838383a518bfb761645ca/packages/plugin-browser/README.md" target="_blank" rel="noopener noreferrer">experimental browser plugin</a> that exposes desktop Chromium to an agent when the browser pane and feature setting are active. the server owns tool definitions and RPC transfer; the desktop owns tabs, CDP, page evaluation, network capture, and screenshots. the attachment is keyed by session ID, so a child session does not inherit its parent's browser connection. page operations target an explicit <code>tabID</code> from that attachment's tab inventory.</p>
+
+            <figure>
+                <svg class="diagram diagram-strong" viewBox="0 0 650 300" role="img" aria-labelledby="browser-title browser-desc">
+                    <title id="browser-title">OpenCode browser plugin execution and network paths</title>
+                    <desc id="browser-desc">A session's server plugin emits connection and request IDs over its browser attachment. The desktop fetches the command through RPC and runs it against a tab in desktop Chromium. Results return through RPC. A separate tunnel routes browser page traffic through the connected server's network, including its loopback and LAN.</desc>
+                    <defs><marker id="browser-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0 L7 3.5 L0 7 Z" fill="var(--ink)"></path></marker></defs>
+                    <text class="muted" x="20" y="22" font-size="10">control and page traffic take different paths</text>
+                    <rect class="node" x="20" y="51" width="180" height="96" rx="8"></rect>
+                    <text class="ink" x="110" y="79" font-size="12" text-anchor="middle">server plugin</text>
+                    <text class="muted" x="110" y="101" font-size="10" text-anchor="middle">session-bound tool call</text>
+                    <text class="muted" x="110" y="121" font-size="10" text-anchor="middle">connection + request IDs</text>
+                    <path class="accent-line" d="M200 98 H228" marker-end="url(#browser-arrow)"></path>
+                    <rect class="accent-node" x="234" y="51" width="180" height="96" rx="8"></rect>
+                    <text class="ink" x="324" y="79" font-size="12" text-anchor="middle">desktop attachment</text>
+                    <text class="muted" x="324" y="101" font-size="10" text-anchor="middle">fetch command + tab ID</text>
+                    <text class="muted" x="324" y="121" font-size="10" text-anchor="middle">return validated result</text>
+                    <path class="accent-line" d="M414 98 H442" marker-end="url(#browser-arrow)"></path>
+                    <rect class="node" x="448" y="51" width="182" height="96" rx="8"></rect>
+                    <text class="ink" x="539" y="79" font-size="12" text-anchor="middle">Chromium tab</text>
+                    <text class="muted" x="539" y="101" font-size="10" text-anchor="middle">CDP · input · screenshot</text>
+                    <text class="muted" x="539" y="121" font-size="10" text-anchor="middle">runs on desktop</text>
+                    <text class="muted" x="324" y="184" font-size="10" text-anchor="middle">attachment belongs to one session; a child needs its own</text>
+                    <rect class="node" x="20" y="218" width="180" height="60" rx="8"></rect>
+                    <text class="ink" x="110" y="241" font-size="11" text-anchor="middle">server network</text>
+                    <text class="muted" x="110" y="260" font-size="10" text-anchor="middle">loopback + LAN reachable</text>
+                    <path class="line dashed" d="M539 147 V247 H207" marker-end="url(#browser-arrow)"></path>
+                    <text class="muted" x="370" y="236" font-size="10" text-anchor="middle">page traffic via TCP tunnel</text>
+                </svg>
+                <figcaption>control flows through the session attachment and RPC; Chromium runs on the desktop, while its page requests use the server's network. <a href="https://github.com/anomalyco/opencode/blob/7689c3654ed979ca70c838383a518bfb761645ca/packages/plugin-browser/README.md" target="_blank" rel="noopener noreferrer">browser plugin contract</a> · <a href="https://github.com/anomalyco/opencode/blob/7689c3654ed979ca70c838383a518bfb761645ca/packages/plugin-browser/src/connection.ts" target="_blank" rel="noopener noreferrer">attachment implementation</a></figcaption>
+            </figure>
+
+            <p>the plugin provides navigation, input, accessibility snapshots with expiring element references, screenshots, and debugging records. an RPC control event carries connection and request IDs; the desktop fetches the pending command and returns a validated result. uploads cross from server-local paths as bytes into desktop-local temporary files, while captures travel back. each transfer is limited to 5 MiB because the two sides cannot assume a shared filesystem.</p>
+
+            <p><a href="https://github.com/can1357/oh-my-pi/blob/main/docs/tools/browser.md" target="_blank" rel="noopener noreferrer">oh-my-pi</a> instead exposes a browser facade inside its Eval tool, so one script can observe, act, and extract before returning a compact answer. <a href="https://cursor.com/blog/cloud-agent-lessons" target="_blank" rel="noopener noreferrer">Cursor’s cloud agent</a> describes a specialist computer-use subagent with its own prompt and screen recording, sharing the browser with its parent.</p>
+
+            <p>the boundary is still unfinished in OpenCode's base plugin: its <a href="https://github.com/anomalyco/opencode/blob/7689c3654ed979ca70c838383a518bfb761645ca/packages/plugin-browser/README.md" target="_blank" rel="noopener noreferrer">README</a> explicitly leaves per-URL and server-file permission checks for a later layer. Chromium and page JavaScript run on the desktop, but page traffic goes through a TCP tunnel to the connected server's network, including its loopback and LAN. a URL check only on the model's initial navigation argument would miss subsequent requests induced by the page. after a timeout, a click or upload may already have happened, so repeating it blindly risks a second side effect. page content, headers, and logs remain untrusted even when the RPC result validates.</p>
+
+            <p><a href="https://github.com/vercel-labs/agent-browser" target="_blank" rel="noopener noreferrer">agent-browser</a> packages browser actions as CLI commands and snapshots with element references; <a href="https://github.com/microsoft/playwright-mcp" target="_blank" rel="noopener noreferrer">Playwright MCP</a> supplies browser actions through MCP tools and structured accessibility snapshots. the packaging changes how actions are discovered and observations enter context; URL and network authority still need their own policy.</p>
+
+            <h2>5. execution control: policy, location, hooks</h2>
+
+            <p>advertising a tool does not authorize the call. OpenCode can hide wholly denied tools from the <a href="https://github.com/anomalyco/opencode/blob/7689c3654ed979ca70c838383a518bfb761645ca/packages/core/src/tool.ts" target="_blank" rel="noopener noreferrer">registry snapshot</a>, then evaluate action and resource at a handler through <a href="https://github.com/anomalyco/opencode/blob/7689c3654ed979ca70c838383a518bfb761645ca/packages/core/src/permission.ts" target="_blank" rel="noopener noreferrer">ordered permission rules</a>; the last matching rule wins, unmatched requests ask, and a saved approval cannot override an explicit denial. file tools check paths; the MCP wrapper checks a server-qualified action; the shell tool <a href="https://github.com/anomalyco/opencode/blob/7689c3654ed979ca70c838383a518bfb761645ca/packages/core/src/tool/plugin/shell.ts" target="_blank" rel="noopener noreferrer">scans resources and validates the working directory</a>. custom plugins must supply the checks their effects require. the browser gap above shows why “the registry has permissions” is not a complete security claim.</p>
+
+            <p>location matters independently. a session <a href="https://github.com/anomalyco/opencode/blob/7689c3654ed979ca70c838383a518bfb761645ca/packages/core/src/environment/environment.ts" target="_blank" rel="noopener noreferrer">environment</a> binds filesystem operations and process spawning. the <a href="https://github.com/anomalyco/opencode/blob/7689c3654ed979ca70c838383a518bfb761645ca/packages/core/src/environment/local.ts" target="_blank" rel="noopener noreferrer">local driver</a> uses host filesystem and process APIs when no workspace driver is selected; the <a href="https://github.com/anomalyco/opencode/blob/7689c3654ed979ca70c838383a518bfb761645ca/packages/core/src/workspace/driver.ts" target="_blank" rel="noopener noreferrer">workspace registry</a> has no isolated provider by default. permission answers “may this action run?”; the driver answers “where can it affect state?” <a href="https://openai.com/index/running-codex-safely/" target="_blank" rel="noopener noreferrer">Codex</a> makes that distinction concrete by combining approval decisions with a sandbox that enforces filesystem and network limits. <a href="https://docs.devin.ai/onboard-devin/environment" target="_blank" rel="noopener noreferrer">Devin</a> starts sessions from a prepared organization environment snapshot, which addresses reproducibility of tools and dependencies. a clean starting environment and an enforced runtime boundary solve different problems.</p>
+
+            <p><a href="https://github.com/anomalyco/opencode/blob/7689c3654ed979ca70c838383a518bfb761645ca/packages/core/src/plugin/hooks.ts" target="_blank" rel="noopener noreferrer">hooks</a> provide another seam: <code>tool.execute.before</code> may change input or reject the call, and <code>tool.execute.after</code> may change the result. for a top-level call, OpenCode <a href="https://github.com/anomalyco/opencode/blob/7689c3654ed979ca70c838383a518bfb761645ca/packages/core/src/tool.ts" target="_blank" rel="noopener noreferrer">resolves a hook-changed tool name</a> against the definitions admitted for that request, then the handler checks its relevant resource. as the provider streams tool-call events, the <a href="https://github.com/anomalyco/opencode/blob/7689c3654ed979ca70c838383a518bfb761645ca/packages/core/src/session/runner/step.ts" target="_blank" rel="noopener noreferrer">step executor</a> can start independent local calls in parallel. it waits for them all to settle after the stream ends, then builds the next model step.</p>
+
+            <p><a href="https://code.claude.com/docs/en/permissions" target="_blank" rel="noopener noreferrer">Claude Code</a> puts <code>PreToolUse</code> before its permission evaluation; a hook can block a call, while permission policy still has the final say on a denial. <a href="https://github.com/earendil-works/pi/blob/main/packages/coding-agent/docs/extensions.md" target="_blank" rel="noopener noreferrer">Pi extensions</a> can register tools, intercept <code>tool_call</code>, and customize context or compaction from one extension API. they run with the user's OS permissions, so extension flexibility is not isolation.</p>
+
+            <p>hook order matters because the arguments checked by policy should be the arguments the handler executes. the OpenCode registry, handler checks, and environment driver each cover a different part of that path. none can stand in for the others: a prompt-visible restriction does not constrain a process, and an approval dialog does not prove where its effects landed.</p>
+
+            <h2>6. subagents: a new context with a return path</h2>
+
+            <p>OpenCode advertises eligible child agents by name and description in the <a href="https://github.com/anomalyco/opencode/blob/7689c3654ed979ca70c838383a518bfb761645ca/packages/core/src/tool/plugin/subagent.ts" target="_blank" rel="noopener noreferrer">subagent tool description</a>. the model chooses whether to call <code>subagent</code>; no separate task classifier fires in this path. the handler checks the selected agent, permission, and depth (one level by default), then starts a child session with its own agent choice and task prompt. the child's message history is separate from the parent's. a later call can pass its <code>sessionID</code> to continue that child; the handler verifies that the session belongs to the current parent, so the ID is not a way to attach an arbitrary conversation.</p>
+
+            <figure>
+                <svg class="diagram diagram-strong" viewBox="0 0 650 332" role="img" aria-labelledby="subagent-title subagent-desc">
+                    <title id="subagent-title">A child has its own conversation but may share files</title>
+                    <desc id="subagent-desc">The parent model calls subagent. The tool checks agent, permission, and depth, then creates a child session with its own prompt and history. The child can use tools against the same working location. Foreground delegation returns final text; background delegation returns an ID first and sends a completion notice later. A configured command can create a background child through a separate trigger.</desc>
+                    <defs><marker id="subagent-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0 L7 3.5 L0 7 Z" fill="var(--ink)"></path></marker></defs>
+                    <text class="muted" x="20" y="20">parent session</text>
+                    <text class="muted" x="241" y="20">child session</text>
+                    <text class="muted" x="470" y="20">working location</text>
+                    <path class="faint-line" d="M221 30 V309 M450 30 V309"></path>
+                    <rect class="node" x="20" y="47" width="181" height="60" rx="8"></rect>
+                    <text class="ink" x="110" y="71" text-anchor="middle">model calls subagent</text>
+                    <text class="muted" x="110" y="91" text-anchor="middle">chooses named agent + task</text>
+                    <path class="accent-line" d="M110 107 V126" marker-end="url(#subagent-arrow)"></path>
+                    <rect class="node" x="20" y="129" width="181" height="60" rx="8"></rect>
+                    <text class="ink" x="110" y="153" text-anchor="middle">tool gate</text>
+                    <text class="muted" x="110" y="173" text-anchor="middle">agent · permission · depth</text>
+                    <path class="accent-line" d="M201 159 H238" marker-end="url(#subagent-arrow)"></path>
+                    <rect class="accent-node" x="242" y="129" width="188" height="60" rx="8"></rect>
+                    <text class="ink" x="336" y="153" text-anchor="middle">new child session</text>
+                    <text class="muted" x="336" y="173" text-anchor="middle">own prompt + history</text>
+                    <path class="accent-line" d="M336 189 V212" marker-end="url(#subagent-arrow)"></path>
+                    <rect class="node" x="242" y="215" width="188" height="58" rx="8"></rect>
+                    <text class="ink" x="336" y="238" text-anchor="middle">child works</text>
+                    <text class="muted" x="336" y="256" text-anchor="middle">its own model turns + tools</text>
+                    <path class="accent-line" d="M430 244 H466" marker-end="url(#subagent-arrow)"></path>
+                    <rect class="node" x="470" y="215" width="160" height="58" rx="8"></rect>
+                    <text class="ink" x="550" y="238" text-anchor="middle">shared files</text>
+                    <text class="muted" x="550" y="256" text-anchor="middle">unless isolated</text>
+                    <path class="accent-line" d="M242 244 H206 V290 H201" marker-end="url(#subagent-arrow)"></path>
+                    <rect class="accent-node" x="20" y="281" width="181" height="39" rx="8"></rect>
+                    <text class="ink" x="110" y="305" text-anchor="middle">text, or ID + later notice</text>
+                    <text class="muted" x="242" y="310">a configured command is another child-session trigger</text>
+                </svg>
+                <figcaption>a child gets separate model history, but its tools use the parent's working location by default. <a href="https://github.com/anomalyco/opencode/blob/7689c3654ed979ca70c838383a518bfb761645ca/packages/core/src/tool/plugin/subagent.ts" target="_blank" rel="noopener noreferrer">subagent path</a> · <a href="https://github.com/anomalyco/opencode/blob/7689c3654ed979ca70c838383a518bfb761645ca/packages/core/src/session/subagent-completion.ts" target="_blank" rel="noopener noreferrer">completion</a></figcaption>
+            </figure>
+
+            <p>foreground delegation waits for final child text. background delegation returns a session ID, and <a href="https://github.com/anomalyco/opencode/blob/7689c3654ed979ca70c838383a518bfb761645ca/packages/core/src/session/subagent-completion.ts" target="_blank" rel="noopener noreferrer">completion delivery</a> later inserts a synthetic notice for the parent. <a href="https://github.com/anomalyco/opencode/blob/7689c3654ed979ca70c838383a518bfb761645ca/packages/core/src/config/plugin/command.ts" target="_blank" rel="noopener noreferrer">configured commands</a> can also launch a background child; that route creates the session directly and does not pass through the <code>subagent</code> tool's depth and agent-specific permission gate. the child uses the parent's working location by default, so separate context does not imply separate files.</p>
+
+            <p><a href="https://code.claude.com/docs/en/worktrees" target="_blank" rel="noopener noreferrer">Claude Code</a> can give a child its own Git worktree. <a href="https://github.com/can1357/oh-my-pi/blob/main/docs/tools/task.md" target="_blank" rel="noopener noreferrer">oh-my-pi</a> offers batched tasks with bounded concurrency and optional isolated spawns that merge by patch or branch. those are decisions about file conflicts and return artifacts, not simply how many agents to run.</p>
+
+            <p>the return contract matters as much as the trigger. a child summary can answer a research question, but it cannot by itself reconcile two concurrent edits to the same file. for implementation work, the harness needs an ownership or merge strategy; separate transcripts alone do not provide one. tasks too small to split also pay the startup and coordination cost without gaining useful parallelism.</p>
+
+            <h2>7. persistence: what survives the next step or a crash?</h2>
+
+            <p>an incoming prompt is first recorded in the <a href="https://github.com/anomalyco/opencode/blob/7689c3654ed979ca70c838383a518bfb761645ca/packages/core/src/session/inbox.ts" target="_blank" rel="noopener noreferrer">session inbox</a>; a queued message waits for current work to drain, while a steer can be delivered at a safe step boundary. delivered messages, settled tool calls, and job outcomes become session state. OpenCode's <a href="https://github.com/anomalyco/opencode/blob/7689c3654ed979ca70c838383a518bfb761645ca/packages/core/src/bus.ts" target="_blank" rel="noopener noreferrer">event bus</a> projects durable session events into SQLite views as they are published. full payload retention for cursor replay is optional and off in the <a href="https://github.com/anomalyco/opencode/blob/7689c3654ed979ca70c838383a518bfb761645ca/packages/cli/src/server-process.ts" target="_blank" rel="noopener noreferrer">normal CLI server configuration</a>; live token fragments seen by a UI are not necessarily a token-by-token durable log.</p>
+
+            <p>the <a href="https://github.com/anomalyco/opencode/blob/7689c3654ed979ca70c838383a518bfb761645ca/packages/core/src/session/history.ts" target="_blank" rel="noopener noreferrer">history builder</a> does not send every stored turn forever. when context grows, <a href="https://github.com/anomalyco/opencode/blob/7689c3654ed979ca70c838383a518bfb761645ca/packages/core/src/session/compaction.ts" target="_blank" rel="noopener noreferrer">local compaction</a> records a new checkpoint: a summary of older work followed by a serialized recent tail. later requests can start from that checkpoint while the original turns remain stored. the tail targets about 15,000 tokens; tool text in it is clipped to 2,000 characters and attachments become descriptions. the automatic trigger reserves at least a 20,000-token buffer. this is a deliberately lossy working view, not a deletion of the transcript.</p>
+
+            <p>a <a href="https://github.com/anomalyco/opencode/blob/7689c3654ed979ca70c838383a518bfb761645ca/packages/core/src/session/history.ts" target="_blank" rel="noopener noreferrer">provider-native checkpoint</a> is different: it is an opaque replacement window, not a summary another model can read. OpenCode replays it only when provider, model, route, and endpoint match its recorded provenance. otherwise the history builder skips that checkpoint and rebuilds the request from eligible original messages. a <a href="https://github.com/anomalyco/opencode/blob/7689c3654ed979ca70c838383a518bfb761645ca/packages/core/src/session/model-request.ts" target="_blank" rel="noopener noreferrer">request hook</a> cannot retarget a selected native window to another endpoint. the session record can be unchanged while the working context takes a different shape.</p>
+
+            <figure>
+                <svg class="diagram diagram-strong" viewBox="0 0 650 260" role="img" aria-labelledby="history-title history-desc">
+                    <title id="history-title">Two ways a later request uses shorter history</title>
+                    <desc id="history-desc">The stored transcript is retained. A local compaction creates readable summary plus recent tail, and a later request starts from that checkpoint. A provider-native checkpoint holds an opaque replacement window. It is replayed only with matching provenance; otherwise the request is rebuilt from original eligible messages.</desc>
+                    <defs><marker id="history-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0 L7 3.5 L0 7 Z" fill="var(--ink)"></path></marker></defs>
+                    <rect class="accent-node" x="175" y="10" width="300" height="45" rx="8"></rect>
+                    <text class="ink" x="325" y="38" text-anchor="middle">stored transcript remains available</text>
+                    <path class="accent-line" d="M325 55 V75 H164 V92" marker-end="url(#history-arrow)"></path>
+                    <path class="accent-line" d="M325 75 H486 V92" marker-end="url(#history-arrow)"></path>
+                    <rect class="node" x="20" y="95" width="288" height="76" rx="8"></rect>
+                    <text class="ink" x="164" y="121" text-anchor="middle">local compaction</text>
+                    <text class="muted" x="164" y="143" text-anchor="middle">readable summary + clipped recent tail</text>
+                    <rect class="node" x="342" y="95" width="288" height="76" rx="8"></rect>
+                    <text class="ink" x="486" y="121" text-anchor="middle">provider-native checkpoint</text>
+                    <text class="muted" x="486" y="143" text-anchor="middle">opaque replacement window</text>
+                    <path class="accent-line" d="M164 171 V193" marker-end="url(#history-arrow)"></path>
+                    <path class="accent-line" d="M486 171 V193" marker-end="url(#history-arrow)"></path>
+                    <text class="ink" x="164" y="219" text-anchor="middle">next request starts at summary</text>
+                    <text class="ink" x="486" y="209" text-anchor="middle">same provenance → replay</text>
+                    <text class="muted" x="486" y="232" text-anchor="middle">otherwise → rebuild from original messages</text>
+                </svg>
+                <figcaption>compaction changes the next working context. it does not erase the original session record.</figcaption>
+            </figure>
+
+            <p>recovery is weaker than exactly-once execution. after a managed restart, the <a href="https://github.com/anomalyco/opencode/blob/7689c3654ed979ca70c838383a518bfb761645ca/packages/core/src/session/execution/restart.ts" target="_blank" rel="noopener noreferrer">restart path</a> can resume an unreleased execution claim with a notice and a bounded attempt count. it describes this as at-least-once: a crash between an external commit and the local success record leaves the outcome uncertain. local coordination prevents two active drains, but cannot undo or deduplicate that remote action. an effectful tool needs a durable call ID that the remote system accepts as an idempotency key, or a way to query and reconcile the previous attempt before retrying.</p>
+
+            <figure>
+                <svg class="diagram diagram-strong" viewBox="0 0 650 288" role="img" aria-labelledby="recovery-title recovery-desc">
+                    <title id="recovery-title">The uncertain interval after a remote side effect</title>
+                    <desc id="recovery-desc">The host sends a tool call. A remote service commits an effect, but the host has not yet recorded success. If the process crashes in this interval, the durable session has no settled result even though the remote effect may have happened. On restart, a stable idempotency key or remote reconciliation can resolve the attempt; blindly replaying may duplicate the effect.</desc>
+                    <defs><marker id="recovery-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0 L7 3.5 L0 7 Z" fill="var(--ink)"></path></marker></defs>
+                    <rect x="296" y="22" width="164" height="147" rx="8" fill="var(--surface-2)"></rect>
+                    <text class="muted" x="378" y="39" text-anchor="middle">uncertain interval</text>
+                    <text class="muted" x="20" y="62">remote service</text>
+                    <path class="line" d="M150 72 H620" marker-end="url(#recovery-arrow)"></path>
+                    <circle cx="184" cy="72" r="6" fill="var(--ink)"></circle>
+                    <circle cx="335" cy="72" r="6" fill="var(--ink)"></circle>
+                    <text class="ink" x="184" y="98" text-anchor="middle">call accepted</text>
+                    <text class="ink" x="335" y="98" text-anchor="middle">effect committed</text>
+                    <text class="muted" x="20" y="134">host session</text>
+                    <path class="line" d="M150 144 H620" marker-end="url(#recovery-arrow)"></path>
+                    <circle cx="184" cy="144" r="6" fill="var(--ink)"></circle>
+                    <circle cx="512" cy="144" r="6" fill="var(--ink)"></circle>
+                    <text class="ink" x="184" y="169" text-anchor="middle">call sent</text>
+                    <text class="ink" x="512" y="169" text-anchor="middle">success recorded</text>
+                    <path class="accent-line dashed" d="M390 112 V186" marker-end="url(#recovery-arrow)"></path>
+                    <rect class="accent-node" x="154" y="191" width="472" height="42" rx="8"></rect>
+                    <text class="ink" x="390" y="217" text-anchor="middle">crash here → restart sees no settled result</text>
+                    <path class="line" d="M390 233 V248 H192 V258" marker-end="url(#recovery-arrow)"></path>
+                    <path class="line" d="M390 248 H541 V258" marker-end="url(#recovery-arrow)"></path>
+                    <text class="muted" x="192" y="280" text-anchor="middle">stable call ID / reconcile</text>
+                    <text class="muted" x="541" y="280" text-anchor="middle">blind retry may duplicate</text>
+                </svg>
+                <figcaption>a durable transcript can resume the session, but it cannot infer whether an unrecorded remote action already took effect.</figcaption>
+            </figure>
+
+            <p>other harnesses preserve different things. <a href="https://github.com/earendil-works/pi/blob/main/packages/coding-agent/docs/session-format.md" target="_blank" rel="noopener noreferrer">Pi</a> records a branchable JSONL session tree, letting a user return to an earlier point in the conversation; that branch does not roll the filesystem back. <a href="https://github.com/PrimeIntellect-ai/prime-agent/blob/main/packages/coding-agent/docs/agent-connection.md" target="_blank" rel="noopener noreferrer">Prime Agent’s daemon adapter</a> reconnects clients using event cursors and snapshots. its protocol journals mutating commands by client and command ID: a completed duplicate returns the recorded result, while a command received without a durable result is reported as uncertain rather than replayed. Pi makes conversational branching explicit; Prime Agent makes client reconnection and duplicate commands explicit. neither contract, by itself, undoes an external side effect.</p>
+
+
+            <h2>the boundaries that matter most</h2>
+
+            <p>the recurring difficulty is that each part knows something different. the registry knows which operations to describe; the handler knows which path, command, or remote object a call will touch. a child session has separate messages but may share files. the session log knows what was recorded, while a remote service knows what actually committed. when building a harness, the contracts between those parts need to say where authority is checked, where effects land, what returns to the model, and what can be retried after a failure.</p>
+
+            <p class="source-note">further reading: <a href="https://stencil.so/blog/harness-playbook" target="_blank" rel="noopener noreferrer">Stencil’s playbook</a>, <a href="https://www.langchain.com/blog/the-anatomy-of-an-agent-harness" target="_blank" rel="noopener noreferrer">LangChain’s anatomy</a>, <a href="https://openai.com/index/harness-engineering/" target="_blank" rel="noopener noreferrer">OpenAI’s harness engineering account</a>, <a href="https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents" target="_blank" rel="noopener noreferrer">Anthropic on long-running agents</a>, and the broader <a href="https://github.com/ai-boost/awesome-harness-engineering" target="_blank" rel="noopener noreferrer">harness engineering index</a>.</p>
+        </article>
+    </main>
+    <script src="../../interactions.js" defer></script>
+    <script src="../../orbital-background.js" defer></script>
+</body>
+</html>

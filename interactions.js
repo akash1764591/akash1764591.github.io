@@ -2,6 +2,26 @@
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const finePointer = window.matchMedia('(pointer: fine)').matches;
 
+    const themeToggle = document.querySelector('.theme-toggle');
+    if (themeToggle) {
+        const root = document.documentElement;
+        const themeColor = document.querySelector('meta[name="theme-color"]');
+        const updateTheme = (dark) => {
+            root.classList.toggle('orbital-dark', dark);
+            root.classList.toggle('orbital-light', !dark);
+            themeToggle.textContent = dark ? 'light' : 'dark';
+            themeToggle.setAttribute('aria-label', `switch to ${dark ? 'light' : 'dark'} theme`);
+            if (themeColor) themeColor.content = dark ? '#0a0b0d' : '#ffffff';
+            document.dispatchEvent(new Event('site-theme-change'));
+        };
+        updateTheme(root.classList.contains('orbital-dark'));
+        themeToggle.addEventListener('click', () => {
+            const dark = !root.classList.contains('orbital-dark');
+            updateTheme(dark);
+            try { localStorage.setItem('site-theme', dark ? 'dark' : 'light'); } catch (_) {}
+        });
+    }
+
     if (finePointer && !reduceMotion) {
         document.querySelectorAll('.article-body figure').forEach((figure) => {
             figure.addEventListener('pointermove', (event) => {
@@ -16,23 +36,6 @@
                 figure.style.setProperty('--figure-y', '0px');
             });
         });
-    }
-
-    // mesh drifts very slightly toward the pointer, on top of its own animation
-    if (finePointer && !reduceMotion) {
-        const root = document.documentElement;
-        let pending = false, px = 0, py = 0;
-        window.addEventListener('pointermove', (event) => {
-            px = (event.clientX / window.innerWidth - 0.5) * 22;
-            py = (event.clientY / window.innerHeight - 0.5) * 22;
-            if (pending) return;
-            pending = true;
-            requestAnimationFrame(() => {
-                root.style.setProperty('--mesh-px', `${px.toFixed(1)}px`);
-                root.style.setProperty('--mesh-py', `${py.toFixed(1)}px`);
-                pending = false;
-            });
-        }, { passive: true });
     }
 
     const article = document.querySelector('.article-body');
