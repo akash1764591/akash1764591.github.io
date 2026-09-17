@@ -94,8 +94,6 @@
     function draw(time, delta) {
         ctx.clearRect(0, 0, width, height);
         ctx.lineCap = 'round';
-        const particleColor = document.documentElement.classList.contains('orbital-dark') ? '200, 209, 219' : '10, 52, 207';
-        const colorStrength = document.documentElement.classList.contains('orbital-dark') ? 1.08 : 1;
         const pace = delta ? Math.min(2, delta * 45) : 0;
         for (const particle of particles) {
             const x = particle.x, y = particle.y;
@@ -113,7 +111,7 @@
 
             const alpha = clamp((.22 + particle.tint * .36 + influence.energy * .26) * 1.05, 0, .95);
             const thickness = 1 + particle.tint * .5;
-            ctx.fillStyle = 'rgba(' + particleColor + ', ' + alpha * colorStrength + ')';
+            ctx.fillStyle = 'rgba(10, 52, 207, ' + alpha + ')';
             if (particle.tint <= .8) {
                 ctx.beginPath();
                 ctx.arc(x, y, thickness, 0, Math.PI * 2);
@@ -148,7 +146,6 @@
         document.addEventListener('pointerleave', () => { pointer = null; });
     }
     window.addEventListener('resize', resize, { passive: true });
-    document.addEventListener('site-theme-change', () => draw(0, 0));
     resize();
     if (!reduced) requestAnimationFrame(frame);
 })();

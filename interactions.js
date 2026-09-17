@@ -2,18 +2,6 @@
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const finePointer = window.matchMedia('(pointer: fine)').matches;
 
-    const colorScheme = window.matchMedia('(prefers-color-scheme: dark)');
-    const themeColor = document.querySelector('meta[name="theme-color"]');
-    const updateTheme = () => {
-        const dark = colorScheme.matches;
-        document.documentElement.classList.toggle('orbital-dark', dark);
-        document.documentElement.classList.toggle('orbital-light', !dark);
-        if (themeColor) themeColor.content = dark ? '#0a0b0d' : '#ffffff';
-        document.dispatchEvent(new Event('site-theme-change'));
-    };
-    updateTheme();
-    colorScheme.addEventListener('change', updateTheme);
-
     if (finePointer && !reduceMotion) {
         document.querySelectorAll('.article-body figure').forEach((figure) => {
             figure.addEventListener('pointermove', (event) => {
