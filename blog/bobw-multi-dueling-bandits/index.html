@@ -32,7 +32,7 @@
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.18.3/dist/contrib/auto-render.min.js" integrity="sha384-bjyGPfbij8/NDKJhSGZNP/khQVgtHUE5exjm4Ydllo42FwIgYsdLO2lXGmRBf5Mz" crossorigin="anonymous" onload="renderMathInElement(document.body);"></script>
 
     <link rel="stylesheet" href="../../styles.css">
-    <script>try { if (localStorage.getItem('site-theme') === 'dark') { document.documentElement.classList.replace('orbital-light', 'orbital-dark'); } } catch (_) {}</script>
+    <script>if (matchMedia('(prefers-color-scheme: dark)').matches) document.documentElement.classList.replace('orbital-light', 'orbital-dark');</script>
     <script>document.documentElement.classList.add('motion-ready');</script>
 </head>
 
@@ -44,7 +44,6 @@
         <a href="../../">← home</a>
         <div class="article-nav-actions">
             <a href="https://arxiv.org/abs/2603.18972" target="_blank" rel="noopener noreferrer">paper ↗</a>
-            <button class="theme-toggle" type="button" aria-label="switch to dark theme">dark</button>
         </div>
     </nav>
 

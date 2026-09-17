@@ -2,25 +2,17 @@
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const finePointer = window.matchMedia('(pointer: fine)').matches;
 
-    const themeToggle = document.querySelector('.theme-toggle');
-    if (themeToggle) {
-        const root = document.documentElement;
-        const themeColor = document.querySelector('meta[name="theme-color"]');
-        const updateTheme = (dark) => {
-            root.classList.toggle('orbital-dark', dark);
-            root.classList.toggle('orbital-light', !dark);
-            themeToggle.textContent = dark ? 'light' : 'dark';
-            themeToggle.setAttribute('aria-label', `switch to ${dark ? 'light' : 'dark'} theme`);
-            if (themeColor) themeColor.content = dark ? '#0a0b0d' : '#ffffff';
-            document.dispatchEvent(new Event('site-theme-change'));
-        };
-        updateTheme(root.classList.contains('orbital-dark'));
-        themeToggle.addEventListener('click', () => {
-            const dark = !root.classList.contains('orbital-dark');
-            updateTheme(dark);
-            try { localStorage.setItem('site-theme', dark ? 'dark' : 'light'); } catch (_) {}
-        });
-    }
+    const colorScheme = window.matchMedia('(prefers-color-scheme: dark)');
+    const themeColor = document.querySelector('meta[name="theme-color"]');
+    const updateTheme = () => {
+        const dark = colorScheme.matches;
+        document.documentElement.classList.toggle('orbital-dark', dark);
+        document.documentElement.classList.toggle('orbital-light', !dark);
+        if (themeColor) themeColor.content = dark ? '#0a0b0d' : '#ffffff';
+        document.dispatchEvent(new Event('site-theme-change'));
+    };
+    updateTheme();
+    colorScheme.addEventListener('change', updateTheme);
 
     if (finePointer && !reduceMotion) {
         document.querySelectorAll('.article-body figure').forEach((figure) => {

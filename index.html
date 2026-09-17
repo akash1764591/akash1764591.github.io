@@ -27,7 +27,7 @@
     <link rel="icon" type="image/svg+xml" href="images/favicon.svg?v=6">
     <link rel="preload" href="fonts/geist-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="stylesheet" href="styles.css">
-    <script>try { if (localStorage.getItem('site-theme') === 'dark') { document.documentElement.classList.replace('orbital-light', 'orbital-dark'); } } catch (_) {}</script>
+    <script>if (matchMedia('(prefers-color-scheme: dark)').matches) document.documentElement.classList.replace('orbital-light', 'orbital-dark');</script>
     <script>document.documentElement.classList.add('motion-ready');</script>
 
     <script type="application/ld+json">
@@ -54,7 +54,6 @@
 
     <main class="home-page" id="main-content">
         <canvas class="orbital-field" aria-hidden="true"></canvas>
-        <button class="theme-toggle" type="button" aria-label="switch to dark theme">dark</button>
         <div class="home-grid">
             <section aria-labelledby="home-title">
                 <h1 class="home-title" id="home-title">S Akash</h1>
